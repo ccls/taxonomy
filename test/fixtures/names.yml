@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  taxid: 1
+  name_txt: MyString
+  name_unique: MyString
+  name_class: MyString
+
+two:
+  taxid: 1
+  name_txt: MyString
+  name_unique: MyString
+  name_class: MyString

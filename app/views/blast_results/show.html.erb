@@ -1,0 +1,65 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Query:</b>
+  <%= @blast_result.query %>
+</p>
+
+<p>
+  <b>Len:</b>
+  <%= @blast_result.len %>
+</p>
+
+<p>
+  <b>Result:</b>
+  <%= @blast_result.result %>
+</p>
+
+<p>
+  <b>Bitscore:</b>
+  <%= @blast_result.bitscore %>
+</p>
+
+<p>
+  <b>Score:</b>
+  <%= @blast_result.score %>
+</p>
+
+<p>
+  <b>Expect:</b>
+  <%= @blast_result.expect %>
+</p>
+
+<p>
+  <b>Identities:</b>
+  <%= @blast_result.identities %>
+</p>
+
+<p>
+  <b>Identities percent:</b>
+  <%= @blast_result.identities_percent %>
+</p>
+
+<p>
+  <b>Gaps:</b>
+  <%= @blast_result.gaps %>
+</p>
+
+<p>
+  <b>Gaps percent:</b>
+  <%= @blast_result.gaps_percent %>
+</p>
+
+<p>
+  <b>Strand:</b>
+  <%= @blast_result.strand %>
+</p>
+
+<p>
+  <b>Accession:</b>
+  <%= @blast_result.accession %>
+</p>
+
+
+<%= link_to 'Edit', edit_blast_result_path(@blast_result) %> |
+<%= link_to 'Back', blast_results_path %>

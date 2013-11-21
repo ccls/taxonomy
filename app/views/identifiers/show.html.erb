@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Accession:</b>
+  <%= @identifier.accession %>
+</p>
+
+<p>
+  <b>Gi:</b>
+  <%= @identifier.gi %>
+</p>
+
+<p>
+  <b>Taxid:</b>
+  <%= @identifier.taxid %>
+</p>
+
+
+<%#= link_to 'Edit', edit_identifier_path(@identifier) %> |
+<%= link_to 'Back', identifiers_path %>

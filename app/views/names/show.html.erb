@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Taxid:</b>
+  <%= @name.taxid %>
+</p>
+
+<p>
+  <b>Name txt:</b>
+  <%= @name.name_txt %>
+</p>
+
+<p>
+  <b>Name unique:</b>
+  <%= @name.name_unique %>
+</p>
+
+<p>
+  <b>Name class:</b>
+  <%= @name.name_class %>
+</p>
+
+
+<%#= link_to 'Edit', edit_name_path(@name) %> |
+<%= link_to 'Back', names_path %>

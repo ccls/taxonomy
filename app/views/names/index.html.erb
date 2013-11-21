@@ -1,0 +1,29 @@
+<h1>Listing names</h1>
+
+<table>
+  <tr>
+    <th>Tax</th>
+    <th>Name txt</th>
+    <th>Name unique</th>
+    <th>Name class</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @names.each do |name| %>
+  <tr>
+    <td><%= name.taxid %></td>
+    <td><%= name.name_txt %></td>
+    <td><%= name.name_unique %></td>
+    <td><%= name.name_class %></td>
+    <td><%= link_to 'Show', name %></td>
+    <td><%#= link_to 'Edit', edit_name_path(name) %></td>
+    <td><%#= link_to 'Destroy', name, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%#= link_to 'New Name', new_name_path %>

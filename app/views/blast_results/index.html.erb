@@ -1,0 +1,45 @@
+<h1>Listing blast_results</h1>
+
+<table>
+  <tr>
+    <th>Query</th>
+    <th>Len</th>
+    <th>Result</th>
+    <th>Bitscore</th>
+    <th>Score</th>
+    <th>Expect</th>
+    <th>Identities</th>
+    <th>Identities percent</th>
+    <th>Gaps</th>
+    <th>Gaps percent</th>
+    <th>Strand</th>
+    <th>Accession</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @blast_results.each do |blast_result| %>
+  <tr>
+    <td><%= blast_result.query %></td>
+    <td><%= blast_result.len %></td>
+    <td><%= blast_result.result %></td>
+    <td><%= blast_result.bitscore %></td>
+    <td><%= blast_result.score %></td>
+    <td><%= blast_result.expect %></td>
+    <td><%= blast_result.identities %></td>
+    <td><%= blast_result.identities_percent %></td>
+    <td><%= blast_result.gaps %></td>
+    <td><%= blast_result.gaps_percent %></td>
+    <td><%= blast_result.strand %></td>
+    <td><%= blast_result.accession %></td>
+    <td><%= link_to 'Show', blast_result %></td>
+    <td><%= link_to 'Edit', edit_blast_result_path(blast_result) %></td>
+    <td><%= link_to 'Destroy', blast_result, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Blast result', new_blast_result_path %>

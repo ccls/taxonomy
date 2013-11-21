@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Taxid:</b>
+  <%= @node.taxid %>
+</p>
+
+<p>
+  <b>Parent taxid:</b>
+  <%= @node.parent_taxid %>
+</p>
+
+<p>
+  <b>Rank:</b>
+  <%= @node.rank %>
+</p>
+
+
+<%#= link_to 'Edit', edit_node_path(@node) %> |
+<%= link_to 'Back', nodes_path %>

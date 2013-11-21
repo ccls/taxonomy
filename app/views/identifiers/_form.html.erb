@@ -1,0 +1,29 @@
+<%= form_for(@identifier) do |f| %>
+  <% if @identifier.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@identifier.errors.count, "error") %> prohibited this identifier from being saved:</h2>
+
+      <ul>
+      <% @identifier.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :accession %><br />
+    <%= f.text_field :accession %>
+  </div>
+  <div class="field">
+    <%= f.label :gi %><br />
+    <%= f.number_field :gi %>
+  </div>
+  <div class="field">
+    <%= f.label :taxid %><br />
+    <%= f.number_field :taxid %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

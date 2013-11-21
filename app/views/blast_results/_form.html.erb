@@ -1,0 +1,65 @@
+<%= form_for(@blast_result) do |f| %>
+  <% if @blast_result.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@blast_result.errors.count, "error") %> prohibited this blast_result from being saved:</h2>
+
+      <ul>
+      <% @blast_result.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :query %><br />
+    <%= f.text_field :query %>
+  </div>
+  <div class="field">
+    <%= f.label :len %><br />
+    <%= f.number_field :len %>
+  </div>
+  <div class="field">
+    <%= f.label :result %><br />
+    <%= f.text_field :result %>
+  </div>
+  <div class="field">
+    <%= f.label :bitscore %><br />
+    <%= f.number_field :bitscore %>
+  </div>
+  <div class="field">
+    <%= f.label :score %><br />
+    <%= f.number_field :score %>
+  </div>
+  <div class="field">
+    <%= f.label :expect %><br />
+    <%= f.text_field :expect %>
+  </div>
+  <div class="field">
+    <%= f.label :identities %><br />
+    <%= f.text_field :identities %>
+  </div>
+  <div class="field">
+    <%= f.label :identities_percent %><br />
+    <%= f.number_field :identities_percent %>
+  </div>
+  <div class="field">
+    <%= f.label :gaps %><br />
+    <%= f.text_field :gaps %>
+  </div>
+  <div class="field">
+    <%= f.label :gaps_percent %><br />
+    <%= f.number_field :gaps_percent %>
+  </div>
+  <div class="field">
+    <%= f.label :strand %><br />
+    <%= f.text_field :strand %>
+  </div>
+  <div class="field">
+    <%= f.label :accession %><br />
+    <%= f.text_field :accession %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

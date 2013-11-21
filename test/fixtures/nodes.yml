@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  taxid: 1
+  parent_taxid: 1
+  rank: MyString
+
+two:
+  taxid: 1
+  parent_taxid: 1
+  rank: MyString
