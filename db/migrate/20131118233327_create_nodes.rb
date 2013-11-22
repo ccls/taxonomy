@@ -11,5 +11,11 @@ class CreateNodes < ActiveRecord::Migration
 			t.string :rank
 		end
 		add_index :nodes, :parent_id
+		add_index :nodes, :lft, :unique => true
+		add_index :nodes, :rgt, :unique => true
 	end
 end
+__END__
+
+   (5721.4ms)  CREATE UNIQUE INDEX `index_nodes_on_lft` ON `nodes` (`lft`)
+   (5647.1ms)  CREATE UNIQUE INDEX `index_nodes_on_rgt` ON `nodes` (`rgt`)

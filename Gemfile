@@ -46,4 +46,4 @@ gem "mysql2"
 gem "will_paginate"
 
 
-gem "awesome_nested_set"
+#gem "awesome_nested_set"

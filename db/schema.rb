@@ -31,11 +31,9 @@ ActiveRecord::Schema.define(:version => 20131119004552) do
   end
 
   create_table "identifiers", :force => true do |t|
-    t.string   "accession"
-    t.integer  "gi"
-    t.integer  "taxid"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string  "accession"
+    t.integer "gi"
+    t.integer "taxid"
   end
 
   add_index "identifiers", ["accession"], :name => "index_identifiers_on_accession", :unique => true
@@ -43,12 +41,10 @@ ActiveRecord::Schema.define(:version => 20131119004552) do
   add_index "identifiers", ["taxid"], :name => "index_identifiers_on_taxid"
 
   create_table "names", :force => true do |t|
-    t.integer  "taxid"
-    t.string   "name_txt"
-    t.string   "name_unique"
-    t.string   "name_class"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer "taxid"
+    t.string  "name_txt"
+    t.string  "name_unique"
+    t.string  "name_class"
   end
 
   add_index "names", ["taxid"], :name => "index_names_on_taxid"

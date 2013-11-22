@@ -2,6 +2,56 @@ require 'csv'
 namespace :app do
 namespace :nodes do
 
+	def set_left_children_right(parents,seq=0,depth=0)
+		parents.update_all(:depth => depth+=1)
+		puts "Updated depth to #{depth}"
+		puts "Seq at #{seq}"
+		parents.each do |parent|
+			parent.update_column(:lft,seq+=1)
+			children = parent.children
+			parent.update_column(:children_count,children.length)
+			seq = set_left_children_right(children,seq,depth)
+			parent.update_column(:rgt,seq+=1)
+		end
+		depth-=1
+		return seq
+	end
+
+	#
+	#	Node.rebuild! is projected to take abou 15 days to process the >1million records
+	#	The output looks like this for each.
+	#
+	#  Node Load (0.2ms)  SELECT `nodes`.* FROM `nodes` WHERE (`nodes`.`parent_id` = 244687 
+	#			) ORDER BY `nodes`.`lft`, `nodes`.`rgt`, id
+	#   (0.1ms)  BEGIN
+	#   (0.2ms)  UPDATE `nodes` SET `lft` = 288255, `rgt` = 288256 WHERE `nodes`.`id` = 244687
+	#  Node Load (0.2ms)  SELECT `nodes`.* FROM `nodes` WHERE `nodes`.`id` = 244687 LIMIT 1
+	#   (509.7ms)  SELECT COUNT(*) FROM `nodes` WHERE (`nodes`.`lft` <= 288255 AND 
+	#			`nodes`.`rgt` >= 288256) AND (`nodes`.id != 244687)
+	#  SQL (0.3ms)  UPDATE `nodes` SET `depth` = 0 WHERE `nodes`.`id` = 244687 ORDER BY `nodes`.`lft`
+	#   (526.5ms)  SELECT COUNT(*) FROM `nodes` WHERE (`nodes`.`lft` <= 288255 AND 
+	#			`nodes`.`rgt` >= 288256) AND (`nodes`.id != 244687)
+	#   (49.4ms)  COMMIT
+	#
+	#	Spends a lot of time looking for lft and rgt, when there are none to begin with.
+	#		1 second per record for 1 million records yields 12 days
+	#	> 1000000/60/60/24.0
+	#	=> 11.541666666666666
+	#
+	#	My little version here did the same thing in under 8 hours!
+	#
+	#	Not sure what they are doing or why, but I think they are trying to compute
+	#	the depth, but that is unlikely to be valid if the tree isn't complete or valid.
+	#
+	#	Not going to use the awesome_nested_set gem as won't provide any
+	#	functionality for us.  Once the tree is built, we're done.
+	#
+
+	task :build_nested_set => :environment do
+		set_left_children_right(Node.roots)
+	end
+
+
 	#
 	#	by level 9, the mysql command is apparently too long
 	#	due to the number of parent_ids that it crashes
@@ -79,14 +129,14 @@ namespace :nodes do
 		#	The below sql takes less than 2 minutes.
 		#	I'm gonna change the names and identifiers imports as well.
 		#	
-#		ActiveRecord::Base.connection.execute("DELETE FROM nodes;");
-#		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (id,parent_id,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
-#
-#		#	acts as nested set needs the roots to have null parent_id's
-#		#	only 1 here
-#		Node.find(1).update_column(:parent_id, nil)
+		ActiveRecord::Base.connection.execute("DELETE FROM nodes;");
+		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (id,parent_id,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
 
-#	This WILL take a while.  DAYS! (~3400 hour) 1092643 total so about 14 days
+		#	acts as nested set needs the roots to have null parent_id's
+		#	only 1 here
+		Node.find(1).update_column(:parent_id, nil)
+
+#	This WILL take a while.  DAYS! (~3000/hour) 1092643 total so about 20 days
 #	so not putting it here. Wonder how long it would've taken to just import with ruby.
 #	Would have to sort properly as won't be able to add a node unless its 
 #	parent already exists.
