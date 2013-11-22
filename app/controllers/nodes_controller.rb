@@ -3,10 +3,13 @@ class NodesController < ApplicationController
 	# GET /nodes.json
 	def index
 		params[:parent_taxid] ||= 1
-		if( params[:taxid] )
-			params[:parent_taxid] = Node.where(:taxid => params[:taxid]).first.parent_taxid
-		end
-		@nodes = Node.where(:parent_taxid => params[:parent_taxid])
+		@node = Node.where(:id => params[:parent_taxid]).first
+		@descendants = @node.descendants
+		@nodes = @node.children
+
+#
+#	based on the way that I'm using this, it may be better to use "show" rather than "index"
+#
 
 		respond_to do |format|
 			format.html # index.html.erb

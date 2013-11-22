@@ -1,3 +1,13 @@
 // Place all the styles related to the Nodes controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+table {
+	//	no border spacing
+	border-collapse:collapse;
+}
+tr.other {
+	background-color: #FFF;
+}
+tr.parent {
+	background-color: #EEE;
+}

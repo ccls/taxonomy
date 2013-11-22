@@ -4,7 +4,7 @@
 
 <table>
   <tr>
-    <th>Parent taxid</th>
+    <th>Parent Taxid</th>
     <th>Taxid</th>
     <th>Rank</th>
     <th>Scientific Name</th>
@@ -13,9 +13,9 @@
     <th></th>
   </tr>
 
-<% @nodes.each do |node| %>
-  <tr>
-    <td><%= link_to node.parent_taxid, { :taxid => node.parent_taxid } %></td>
+<% (@descendants + [@node] + @nodes).compact.each do |node| %>
+  <tr class='<%= ( node.parent_taxid.to_s == params[:parent_taxid] ) ? 'parent' : 'other' %>' >
+    <td><%= node.parent_taxid %></td>
     <td><%= link_to node.taxid, { :parent_taxid => node.taxid } %></td>
     <td><%= node.rank %></td>
     <td><%= node.names.scientific.first %></td>
