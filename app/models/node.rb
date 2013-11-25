@@ -1,12 +1,13 @@
 class Node < ActiveRecord::Base
-	attr_accessible :parent_id, :rank
+	attr_accessible :taxid, :parent_taxid, :rank
+#	attr_accessible :parent_id, :rank
 
 	has_many :names, :foreign_key => :taxid
 
 	#	Alias Attributes may work on the rail's side, but won't be
 	#		used in any database calls.
-	alias_attribute :taxid, :id
-	alias_attribute :parent_taxid, :parent_id
+#	alias_attribute :taxid, :id
+#	alias_attribute :parent_taxid, :parent_id
 
 
 	#	Now that this is done, why do I need this gem.
@@ -26,17 +27,22 @@ class Node < ActiveRecord::Base
 
 	has_many :children,
 		:class_name => 'Node',
-		:foreign_key => :parent_id,
+#		:foreign_key => :parent_id,
+		:foreign_key => :parent_taxid,
+		:primary_key => :taxid,
 		:inverse_of => :parent,
 		:order => :lft
 		
 	belongs_to :parent, 
 		:class_name => 'Node',
-		:foreign_key => :parent_id,
+#		:foreign_key => :parent_id,
+		:foreign_key => :parent_taxid,
+		:primary_key => :taxid,
 		:counter_cache => true,
 		:inverse_of => :children
 
-	scope :roots, ->{ where(:parent_id => nil) }
+	scope :roots, ->{ where(:parent_taxid => nil) }
+#	scope :roots, ->{ where(:parent_id => nil) }
 
 	def ancestors
 		Node.where(Node.arel_table[:lft].gt(lft))
@@ -57,41 +63,6 @@ class Node < ActiveRecord::Base
 end
 
 __END__
-
-        # Add callbacks, if they were supplied.. otherwise, we don't want them.
-        [:before_add, :after_add, :before_remove, :after_remove].each do |ar_callback|
-          has_many_children_options.update(
-            ar_callback => acts_as_nested_set_options[ar_callback]
-          ) if acts_as_nested_set_options[ar_callback]
-        end
-
-        has_many :children, -> { order(quoted_order_column_name) },
-                 has_many_children_options
-      end
-
-
-      def acts_as_nested_set_relate_parent!
-        belongs_to :parent, :class_name => self.base_class.to_s,
-                            :foreign_key => parent_column_name,
-                            :counter_cache => acts_as_nested_set_options[:counter_cache],
-                            :inverse_of => (:children unless acts_as_nested_set_options[:polymorphic]),
-                            :polymorphic => acts_as_nested_set_options[:polymorphic]
-      end
-
-      def acts_as_nested_set_default_options
-        {
-          :parent_column => 'parent_id',
-          :left_column => 'lft',
-          :right_column => 'rgt',
-          :depth_column => 'depth',
-          :dependent => :delete_all, # or :destroy
-          :polymorphic => false,
-          :counter_cache => false
-        }.freeze
-      end
-
-
-
 
 rubydoc.info/github/rails/arel/master/Arel/Predications
 Arel:Predications
@@ -126,3 +97,4 @@ Arel:Predications
 - (Object) not_in(other)
 - (Object) not_in_all(others)
 - (Object) not_in_any(others) 
+

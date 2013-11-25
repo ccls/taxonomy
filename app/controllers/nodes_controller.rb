@@ -3,7 +3,7 @@ class NodesController < ApplicationController
 	# GET /nodes.json
 	def index
 		params[:parent_taxid] ||= 1
-		@node = Node.where(:id => params[:parent_taxid]).first
+		@node = Node.where(:taxid => params[:parent_taxid]).first
 		@descendants = @node.descendants
 		@nodes = @node.children
 

@@ -1,8 +1,9 @@
-require 'csv'
+#require 'csv'
 namespace :app do
 namespace :identifiers do
 
 	task :import => :environment do 
+		puts Time.now
 #		#
 #		#	THESE FILES DO NOT HAVE COLUMN HEADERS SO MUST USE INDEX
 #		#
@@ -26,6 +27,7 @@ namespace :identifiers do
 		ActiveRecord::Base.connection.execute("DELETE FROM identifiers;");
 		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/accession_gi_taxid.csv' INTO TABLE identifiers FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (accession,gi,taxid);")
 
+		puts Time.now
 	end	#	task :import => :environment do 
 
 end	#	namespace :identifiers do

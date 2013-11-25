@@ -1,8 +1,9 @@
-require 'csv'
+#require 'csv'
 namespace :app do
 namespace :names do
 
 	task :import => :environment do 
+		puts Time.now
 		#
 		#	THESE FILES DO NOT HAVE COLUMN HEADERS SO MUST USE INDEX
 		#
@@ -41,6 +42,7 @@ namespace :names do
 		ActiveRecord::Base.connection.execute("DELETE FROM names;");
 		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/names.dmp' INTO TABLE names FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\t|\n' (taxid,name_txt,name_unique,name_class);")
 
+		puts Time.now
 	end	#	task :import => :environment do 
 
 end	#	namespace :names do

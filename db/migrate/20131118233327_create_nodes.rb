@@ -3,19 +3,25 @@ class CreateNodes < ActiveRecord::Migration
 		create_table :nodes do |t|
 			#	id is taxid
 			#	parent_id is parent_taxid
-			t.integer :parent_id
+#
+#	Now that I am no longer using the awesome_nested_set gem,
+#		taxid and parent_taxid could be used again.
+#	Just an FYI to clear up any confusion
+#
+			t.integer :taxid
+			t.integer :parent_taxid
 			t.integer :lft
 			t.integer :rgt
 			t.integer :depth
 			t.integer :children_count, :default => 0
 			t.string :rank
 		end
-		add_index :nodes, :parent_id
+		add_index :nodes, :taxid, :unique => true
+		add_index :nodes, :parent_taxid
+#		add_index :nodes, :parent_id
 		add_index :nodes, :lft, :unique => true
 		add_index :nodes, :rgt, :unique => true
+		add_index :nodes, [:lft,:rgt], :unique => true
 	end
 end
 __END__
-
-   (5721.4ms)  CREATE UNIQUE INDEX `index_nodes_on_lft` ON `nodes` (`lft`)
-   (5647.1ms)  CREATE UNIQUE INDEX `index_nodes_on_rgt` ON `nodes` (`rgt`)

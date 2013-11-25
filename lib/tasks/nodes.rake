@@ -1,4 +1,4 @@
-require 'csv'
+#require 'csv'
 namespace :app do
 namespace :nodes do
 
@@ -52,34 +52,34 @@ namespace :nodes do
 	end
 
 
-	#
-	#	by level 9, the mysql command is apparently too long
-	#	due to the number of parent_ids that it crashes
-	#	Adding a find_in_batches block to see if helps.
-	#	The batches still fail.  The mysql command is still the same length.
-	#		Trying each_slice.  YAY!
-	#
-	# Do this AFTER running Node.rebuild! as it sets the depth to 0 for everything!
-	#
-	task :rebuild_depth => :environment do
-		#	Sadly, after waiting days to build the nested set,
-		#	the depth attribute is not set.
-		parent_ids = [nil]
-		depth = 0
-		while !parent_ids.empty?
-			puts "Depth:#{depth}"
-			new_parent_ids = []
-			parent_ids.each_slice(50000) do |slice|
-				parents = Node.where(:parent_id => slice)	#	NEED to limit the sql command length here!
-				new_parent_ids += parents.collect(&:id)
-				parents.update_all :depth => depth
-				puts "New Parent ids length:#{new_parent_ids.length}"
-			end
-			parent_ids = new_parent_ids
-			puts "Parent ids length:#{parent_ids.length}"
-			depth += 1
-		end
-	end
+#	#
+#	#	by level 9, the mysql command is apparently too long
+#	#	due to the number of parent_ids that it crashes
+#	#	Adding a find_in_batches block to see if helps.
+#	#	The batches still fail.  The mysql command is still the same length.
+#	#		Trying each_slice.  YAY!
+#	#
+#	# Do this AFTER running Node.rebuild! as it sets the depth to 0 for everything!
+#	#
+#	task :rebuild_depth => :environment do
+#		#	Sadly, after waiting days to build the nested set,
+#		#	the depth attribute is not set.
+#		parent_ids = [nil]
+#		depth = 0
+#		while !parent_ids.empty?
+#			puts "Depth:#{depth}"
+#			new_parent_ids = []
+#			parent_ids.each_slice(50000) do |slice|
+#				parents = Node.where(:parent_id => slice)	#	NEED to limit the sql command length here!
+#				new_parent_ids += parents.collect(&:id)
+#				parents.update_all :depth => depth
+#				puts "New Parent ids length:#{new_parent_ids.length}"
+#			end
+#			parent_ids = new_parent_ids
+#			puts "Parent ids length:#{parent_ids.length}"
+#			depth += 1
+#		end
+#	end
 
 #Depth:0
 #Parent ids length:1
@@ -102,6 +102,7 @@ namespace :nodes do
 #Depth:9
 
 	task :import => :environment do 
+		puts Time.now
 #		#
 #		#	THESE FILES DO NOT HAVE COLUMN HEADERS SO MUST USE INDEX
 #		#
@@ -130,11 +131,12 @@ namespace :nodes do
 		#	I'm gonna change the names and identifiers imports as well.
 		#	
 		ActiveRecord::Base.connection.execute("DELETE FROM nodes;");
-		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (id,parent_id,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
+#		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (id,parent_id,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
+		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (taxid,parent_taxid,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
 
 		#	acts as nested set needs the roots to have null parent_id's
 		#	only 1 here
-		Node.find(1).update_column(:parent_id, nil)
+		Node.where(:taxid => 1).first.update_column(:parent_taxid, nil)
 
 #	This WILL take a while.  DAYS! (~3000/hour) 1092643 total so about 20 days
 #	so not putting it here. Wonder how long it would've taken to just import with ruby.
@@ -142,6 +144,7 @@ namespace :nodes do
 #	parent already exists.
 #		Node.rebuild!
 
+		puts Time.now
 	end	#	task :import => :environment do 
 
 end	#	namespace :nodes do

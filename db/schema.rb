@@ -14,20 +14,18 @@
 ActiveRecord::Schema.define(:version => 20131119004552) do
 
   create_table "blast_results", :force => true do |t|
-    t.string   "query"
-    t.integer  "len"
-    t.string   "result"
-    t.integer  "bitscore"
-    t.integer  "score"
-    t.string   "expect"
-    t.string   "identities"
-    t.integer  "identities_percent"
-    t.string   "gaps"
-    t.integer  "gaps_percent"
-    t.string   "strand"
-    t.string   "accession"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.string  "query"
+    t.integer "len"
+    t.string  "result"
+    t.integer "bitscore"
+    t.integer "score"
+    t.string  "expect"
+    t.string  "identities"
+    t.integer "identities_percent"
+    t.string  "gaps"
+    t.integer "gaps_percent"
+    t.string  "strand"
+    t.string  "accession"
   end
 
   create_table "identifiers", :force => true do |t|
@@ -50,14 +48,19 @@ ActiveRecord::Schema.define(:version => 20131119004552) do
   add_index "names", ["taxid"], :name => "index_names_on_taxid"
 
   create_table "nodes", :force => true do |t|
-    t.integer "parent_id"
+    t.integer "taxid"
+    t.integer "parent_taxid"
     t.integer "lft"
     t.integer "rgt"
     t.integer "depth"
-    t.string  "rank"
     t.integer "children_count", :default => 0
+    t.string  "rank"
   end
 
-  add_index "nodes", ["parent_id"], :name => "index_nodes_on_parent_id"
+  add_index "nodes", ["lft", "rgt"], :name => "index_nodes_on_lft_and_rgt", :unique => true
+  add_index "nodes", ["lft"], :name => "index_nodes_on_lft", :unique => true
+  add_index "nodes", ["parent_taxid"], :name => "index_nodes_on_parent_taxid"
+  add_index "nodes", ["rgt"], :name => "index_nodes_on_rgt", :unique => true
+  add_index "nodes", ["taxid"], :name => "index_nodes_on_taxid", :unique => true
 
 end
