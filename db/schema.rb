@@ -11,22 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131119004552) do
-
-  create_table "blast_results", :force => true do |t|
-    t.string  "query"
-    t.integer "len"
-    t.string  "result"
-    t.integer "bitscore"
-    t.integer "score"
-    t.string  "expect"
-    t.string  "identities"
-    t.integer "identities_percent"
-    t.string  "gaps"
-    t.integer "gaps_percent"
-    t.string  "strand"
-    t.string  "accession"
-  end
+ActiveRecord::Schema.define(:version => 20131119003856) do
 
   create_table "identifiers", :force => true do |t|
     t.string  "accession"

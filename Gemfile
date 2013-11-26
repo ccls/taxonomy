@@ -45,5 +45,8 @@ gem "mysql"
 gem "mysql2"
 gem "will_paginate"
 
-
 #gem "awesome_nested_set"
+
+#	2.1.0 doesn't seem to actually start
+gem 'sunspot_rails', '= 2.0.0'
+gem 'sunspot_solr', '= 2.0.0'
