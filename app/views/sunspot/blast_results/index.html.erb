@@ -1,0 +1,18 @@
+<div id='refine'>
+	<%= form_tag( sunspot_blast_results_path, :method => :get ) do %>
+		<%= submit_tag "Search Results", :name => nil %><br/>
+
+		<%#	preserve the order and direction on next search %>
+		<%# could also save in session as do elsewhere? %>
+		<%= hidden_field_tag :order, params[:order] %>
+		<%= hidden_field_tag :dir, params[:dir] %>
+
+		<%#= text_field_tag :q, params[:q] %>
+
+		<%= render 'facets' %>
+		<%= render 'per_page' %>
+
+	<% end %><%# form_tag -%>
+	<%= render 'download_csv' %>
+</div>
+<%= render 'results' %>

@@ -73,3 +73,19 @@ Citations file (citations.dmp):
 						-- double quotes ('\"'),
 						-- backslash character ("\\").
 	taxid_list				-- list of node ids separated by a single space
+
+
+
+
+
+
+
+
+
+
+
+
+sudo /opt/local/share/mariadb/support-files/mysql.server start
+
+bundle exec rake sunspot:solr:start 
+

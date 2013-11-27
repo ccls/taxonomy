@@ -11,7 +11,28 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131119003856) do
+ActiveRecord::Schema.define(:version => 20131119004552) do
+
+  create_table "blast_results", :force => true do |t|
+    t.string  "file_name"
+    t.string  "contig_name"
+    t.string  "contig_description"
+    t.integer "contig_length"
+    t.string  "seq_name"
+    t.integer "seq_length"
+    t.decimal "bitscore",           :precision => 10, :scale => 0
+    t.integer "score"
+    t.float   "expect"
+    t.string  "identities"
+    t.integer "identities_percent"
+    t.string  "gaps"
+    t.integer "gaps_percent"
+    t.string  "strand"
+    t.string  "accession"
+  end
+
+  add_index "blast_results", ["accession"], :name => "index_blast_results_on_accession"
+  add_index "blast_results", ["file_name"], :name => "index_blast_results_on_file_name"
 
   create_table "identifiers", :force => true do |t|
     t.string  "accession"

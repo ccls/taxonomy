@@ -20,7 +20,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
+#gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -50,3 +50,6 @@ gem "will_paginate"
 #	2.1.0 doesn't seem to actually start
 gem 'sunspot_rails', '= 2.0.0'
 gem 'sunspot_solr', '= 2.0.0'
+gem 'progress_bar'
+
+

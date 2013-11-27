@@ -39,12 +39,11 @@ GEM
     coffee-script-source (1.6.3)
     erubis (2.7.0)
     execjs (2.0.2)
+    fattr (2.2.1)
+    highline (1.6.20)
     hike (1.2.3)
     i18n (0.6.5)
     journey (1.0.4)
-    jquery-rails (3.0.4)
-      railties (>= 3.0, < 5.0)
-      thor (>= 0.14, < 2.0)
     json (1.8.1)
     mail (2.5.4)
       mime-types (~> 1.16)
@@ -56,8 +55,13 @@ GEM
     mysql2 (0.3.14)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
+    options (2.3.0)
+      fattr
     polyglot (0.3.3)
     pr_geohash (1.0.0)
+    progress_bar (1.0.0)
+      highline (~> 1.6.1)
+      options (~> 2.3.0)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -119,9 +123,9 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 3.2.1)
-  jquery-rails
   mysql
   mysql2
+  progress_bar
   rails (~> 3.2)
   sass-rails (~> 3.2.3)
   sqlite3

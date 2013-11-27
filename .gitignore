@@ -22,3 +22,6 @@ versions/
 /config/initializers/secret_token.rb
 /data/
 
+/solr/pids
+/solr/data
+

@@ -13,3 +13,4 @@ __END__
 => {"acronym"=>928, "anamorph"=>426, "authority"=>187164, "blast name"=>225, "common name"=>13519, "equivalent name"=>19231, "genbank acronym"=>377, "genbank anamorph"=>141, "genbank common name"=>23687, "genbank synonym"=>1980, "in-part"=>415, "includes"=>17127, "misnomer"=>1297, "misspelling"=>20662, "scientific name"=>1092643, "synonym"=>179958, "teleomorph"=>195, "type material"=>63605}
 
 1:1 with "scientific name" only
+

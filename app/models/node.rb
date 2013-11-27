@@ -2,7 +2,7 @@ class Node < ActiveRecord::Base
 	attr_accessible :taxid, :parent_taxid, :rank
 #	attr_accessible :parent_id, :rank
 
-	has_many :names, :foreign_key => :taxid
+	has_many :names, :primary_key => :taxid, :foreign_key => :taxid
 
 	#	Alias Attributes may work on the rail's side, but won't be
 	#		used in any database calls.

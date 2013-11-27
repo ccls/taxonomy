@@ -66,6 +66,7 @@ namespace :blast_results do
 
 		end
 
+		Sunspot.commit
 		puts "End #{Time.now}"
 	end	#	task :import => :environment do 
 
