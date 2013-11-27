@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20131119004552) do
     t.string  "name_class"
   end
 
+  add_index "names", ["name_class"], :name => "index_names_on_name_class"
   add_index "names", ["taxid"], :name => "index_names_on_taxid"
 
   create_table "nodes", :force => true do |t|

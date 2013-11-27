@@ -60,6 +60,10 @@ class Node < ActiveRecord::Base
 			.order(:lft)
 	end
 
+	def scientific_name
+		names.scientific.first
+	end
+
 end
 
 __END__
