@@ -9,6 +9,16 @@ development:
     hostname: localhost
     port: 8985
     log_level: INFO
+    max_memory: 2G
+#
+#	My default was around 1G and caused 
+#		java.lang.OutOfMemoryError: Java heap space
+#	after I added a lot of records.
+#
+#	java -XX:+PrintFlagsFinal -version
+#
+#	Set it to 2G here and seems to be happy
+#
 
 test:
   solr:
