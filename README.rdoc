@@ -78,9 +78,20 @@ Citations file (citations.dmp):
 
 
 
+Getting ....
 
+RSolr::Error::Http (RSolr::Error::Http - 500 Internal Server Error
+Error:     Java heap space
 
+java.lang.OutOfMemoryError: Java heap space
 
+How to get current value?
+
+ java -XX:+PrintFlagsFinal -version
+
+How to set new value?
+
+ config/sunspot.yml allows for adjusting max and min
 
 
 
