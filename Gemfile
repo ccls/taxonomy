@@ -52,4 +52,7 @@ gem 'sunspot_rails', '= 2.0.0'
 gem 'sunspot_solr', '= 2.0.0'
 gem 'progress_bar'
 
+#	used for checking BlastResults with odd accession numbers
+#	but not really needed.
+gem 'jakewendt-active_record_left_joins'
 
