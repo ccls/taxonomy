@@ -8,7 +8,7 @@ class BlastResult < ActiveRecord::Base
 	has_one  :node , :through => :identifier
 
 	def ancestors
-		@ancestors ||= node.ancestors
+		@ancestors ||= ( node.try(:ancestors) || [] )
 	end
 
 	validates_presence_of :accession, :bitscore, :contig_name, :contig_length, 
