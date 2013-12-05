@@ -7,6 +7,11 @@ class BlastResult < ActiveRecord::Base
 	has_many :names, :through => :identifier
 	has_one  :node , :through => :identifier
 
+	scope :stray_accession_numbers, ->{ left_joins(:identifier).where(:"identifiers.gi" => nil) }
+#	strays = BlastResult.left_joins(:identifier).where(:"identifiers.gi" => nil)
+#irb(main):009:0> strays.collect(&:accession)
+#=> ["3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "1C2W", "1P6V", "1P6V", "4A1D", "4A18", "4A1B", "2YMF", "3IZ9", "3IZ9", "3CW1", "3CW1", "2ZKR", "2ZKR", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2KX8", "2KX8", "2ZKR", "2ZKR", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "2ZKR", "2ZKR", "2ZKR", "3AN2", "3AN2", "2GO5", "2J37", "1L9A", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2Y9A", "2Y9A", "4A17", "4A1A", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "1C2W", "2GYC", "2GYA", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "3V27", "3UXQ", "3PYV", "3PYT", "3PYR", "3PYO", "3MRZ", "3MS1", "3KNM", "2WRJ", "2WRL", "3HUX", "3FIN", "3D5B", "3D5D", "2HGJ", "2HGQ", "1YL3", "1VSA", "2B66", "1VSP", "1GIY", "4ABS", "4A1D", "4A18", "4A1B"]
+
 	def ancestors
 		@ancestors ||= ( node.try(:ancestors) || [] )
 	end
