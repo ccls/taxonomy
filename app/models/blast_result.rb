@@ -12,6 +12,37 @@ class BlastResult < ActiveRecord::Base
 #irb(main):009:0> strays.collect(&:accession)
 #=> ["3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "1C2W", "1P6V", "1P6V", "4A1D", "4A18", "4A1B", "2YMF", "3IZ9", "3IZ9", "3CW1", "3CW1", "2ZKR", "2ZKR", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2KX8", "2KX8", "2ZKR", "2ZKR", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "2ZKR", "2ZKR", "2ZKR", "3AN2", "3AN2", "2GO5", "2J37", "1L9A", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKQ", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2ZKR", "2Y9A", "2Y9A", "4A17", "4A1A", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "2AWB", "1VS6", "1C2W", "2GYC", "2GYA", "3IZT", "3FIK", "3E1B", "2I2V", "2AW4", "3V27", "3UXQ", "3PYV", "3PYT", "3PYR", "3PYO", "3MRZ", "3MS1", "3KNM", "2WRJ", "2WRL", "3HUX", "3FIN", "3D5B", "3D5D", "2HGJ", "2HGQ", "1YL3", "1VSA", "2B66", "1VSP", "1GIY", "4ABS", "4A1D", "4A18", "4A1B"]
 
+#jakewendt@fxdgroup-169-229-196-225 : taxonomy 533> grep 3IZT data/accession_gi_taxid.csv 
+#3IZT_A,326634209,83333
+#3IZT_B,326634210,83333
+#jakewendt@fxdgroup-169-229-196-225 : taxonomy 534> grep 3IZT trinity_non_human_paired.blastn.txt
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...  71.3    2e-09
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   281    2e-72 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   143    4e-31
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   211    1e-51
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   215    7e-53
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   124    1e-25
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   187    1e-44
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   128    8e-27
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   156    4e-35
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   156    4e-35
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   193    3e-46
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   134    1e-28
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...   217    2e-53
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+#pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...  78.7    8e-12
+#>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination 
+
 	def ancestors
 		@ancestors ||= ( node.try(:ancestors) || [] )
 	end
@@ -20,7 +51,7 @@ class BlastResult < ActiveRecord::Base
 		:contig_description, :expect, :file_name, :gaps, :gaps_percent, 
 		:identities, :identities_percent, :score, :seq_name, :seq_length, :strand
 
-	include Sunspotability
+	include ActiveRecordSunspotter::Sunspotability
 
 	add_sunspot_column( :id, :type => :integer, :default => true )
 	add_sunspot_column( :file_name, :facetable => true, :default => true )

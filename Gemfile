@@ -56,3 +56,6 @@ gem 'progress_bar'
 #	but not really needed.
 gem 'jakewendt-active_record_left_joins'
 
+
+gem 'jakewendt-active_record_sunspotter'
+

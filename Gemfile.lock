@@ -44,6 +44,10 @@ GEM
     hike (1.2.3)
     i18n (0.6.9)
     jakewendt-active_record_left_joins (0.0.0)
+    jakewendt-active_record_sunspotter (0.0.0)
+      progress_bar
+      sunspot_rails (= 2.0.0)
+      sunspot_solr (= 2.0.0)
     journey (1.0.4)
     json (1.8.1)
     mail (2.5.4)
@@ -125,6 +129,7 @@ PLATFORMS
 DEPENDENCIES
   coffee-rails (~> 3.2.1)
   jakewendt-active_record_left_joins
+  jakewendt-active_record_sunspotter
   mysql
   mysql2
   progress_bar
