@@ -19,7 +19,7 @@ For example, there are a number of matches to 3IZT in the blast output.
  > grep 3IZT trinity_non_human_paired.blastn.txt | head -1
  pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...  71.3    2e-09
 
-Yet, there is no extract accesion number 3IZT, but there are 3IZT_A and 3IZT_B.
+Yet, there is no extracted accession number 3IZT, but there are 3IZT_A and 3IZT_B.
 
  > grep 3IZT data/accession_gi_taxid.csv 
  3IZT_A,326634209,83333
