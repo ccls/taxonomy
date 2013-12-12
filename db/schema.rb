@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(:version => 20131119004552) do
     t.integer "contig_length"
     t.string  "seq_name"
     t.integer "seq_length"
-    t.decimal "bitscore",           :precision => 10, :scale => 0
+    t.float   "bitscore"
     t.integer "score"
     t.float   "expect"
     t.string  "identities"

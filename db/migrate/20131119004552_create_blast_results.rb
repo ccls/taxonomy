@@ -7,7 +7,8 @@ class CreateBlastResults < ActiveRecord::Migration
 			t.integer :contig_length
 			t.string :seq_name
 			t.integer :seq_length
-			t.decimal :bitscore		#	not always an integer
+#			t.decimal :bitscore, :precision => 8, :scale => 2
+			t.float :bitscore
 			t.integer :score
 			t.float :expect							#	may want to use decimal or float for this?
 			t.string :identities
@@ -21,3 +22,8 @@ class CreateBlastResults < ActiveRecord::Migration
 		add_index :blast_results, :accession
 	end
 end
+
+__END__
+
+defaults for decimal are 10 and 0 which means it'd just be an integer!!!!!
+
