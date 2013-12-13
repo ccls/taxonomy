@@ -1,5 +1,9 @@
 == Taxonomy 
 
+Creating an app that will import a blastn output file and parse out and import the details.
+
+
+
 
 
 
@@ -43,6 +47,7 @@ Identifiers were extracted from the ncbi nt database (>26million)
 
 
 Nodes and Names came from ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
+( I did not import all of nodes, or any of the other data. )
 
  *.dmp files are bcp-like dump from GenBank taxonomy database.
 
@@ -79,11 +84,11 @@ Nodes and Names came from ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
  	comments
 
  Genetic codes file:
-  genetic code id				-- GenBank genetic code id
-  abbreviation				-- genetic code name abbreviation
-  name					-- genetic code name
-  cde					-- translation table for this genetic code
-  starts					-- start codons for this genetic code
+ 	genetic code id				-- GenBank genetic code id
+ 	abbreviation				-- genetic code name abbreviation
+ 	name					-- genetic code name
+ 	cde					-- translation table for this genetic code
+ 	starts					-- start codons for this genetic code
 
  Deleted nodes file (delnodes.dmp):
  	tax_id					-- deleted node id
@@ -112,10 +117,10 @@ Nodes and Names came from ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
 
 Getting ....
 
-RSolr::Error::Http (RSolr::Error::Http - 500 Internal Server Error
-Error:     Java heap space
+ RSolr::Error::Http (RSolr::Error::Http - 500 Internal Server Error
+ Error:     Java heap space
 
-java.lang.OutOfMemoryError: Java heap space
+ java.lang.OutOfMemoryError: Java heap space
 
 How to get current value?
 
