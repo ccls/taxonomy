@@ -10,7 +10,9 @@ class CreateBlastResults < ActiveRecord::Migration
 #			t.decimal :bitscore, :precision => 8, :scale => 2
 			t.float :bitscore
 			t.integer :score
-			t.float :expect							#	may want to use decimal or float for this?
+			#	float worked for most, but less than ~1e-38 get converted to 0
+			#	double seems to extend that down to ~2e-308, and I haven't seen any that low.
+			t.double :expect
 			t.string :identities
 			t.integer :identities_percent
 			t.string :gaps
