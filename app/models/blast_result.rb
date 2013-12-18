@@ -1,3 +1,20 @@
+
+#
+#	these are missing in sunspot 2.0
+#
+module Sunspot::Type
+	class TrieDoubleType < DoubleType
+		def indexed_name(name)
+			"#{super}t"
+		end
+	end
+	class TrieLongType < LongType
+		def indexed_name(name)
+			"#{super}t"
+		end
+	end
+end
+
 class BlastResult < ActiveRecord::Base
 	attr_accessible :accession, :bitscore, :contig_name, :contig_length,
 		:contig_description, :expect, :file_name, :gaps, :gaps_percent,
@@ -58,12 +75,19 @@ class BlastResult < ActiveRecord::Base
 	add_sunspot_column( :accession, :default => true )
 	add_sunspot_column( :name, :facetable => true,
 		:meth => ->(s){ s.names.scientific.first || 'NULL?' } )
-	add_sunspot_column( :expect, :default => true, :facetable => true, :type => :float,
+#
+#	I changed this to double, but then the facets went away?????
+#		(that's because the name of the column changed and was therefore empty.)
+#	Will have to change to double and then reindex if really want it.
+#
+#	Seems floats only really go down to 1e-50 ish
+#
+	add_sunspot_column( :expect, :default => true, :facetable => true, :type => :double,
 		:range => {
 			:log   => true,
-			:start => -40,
-			:stop  => -5,
-			:step  => 5
+			:start => -250,
+			:stop  => 0,
+			:step  => 10
 		} )
 
 
@@ -71,9 +95,13 @@ class BlastResult < ActiveRecord::Base
 #	May want to index the node left and right?  All of the ancestors really slows down indexing.
 #
 
-	#	index gi or taxid to show NULLs, but can't really facet on this.  Too many!
+	#	NOTE index gi or taxid to show NULLs, but can't really facet on this.  Too many!
 	add_sunspot_column( :identifier_found, :facetable => true,
 		:meth => ->(s){ ( s.identifier.present? ) ? 'Yes' : 'No' } )
+
+	#	NOTE also, some taxids extracted from the nt database, don't exist in the TaxDump data??
+
+
 
 	add_sunspot_column( :strand, :facetable => true, :default => true )
 
@@ -178,7 +206,7 @@ class BlastResult < ActiveRecord::Base
 #{:file_name=>"small_trinity_non_human_paired.blastn.txt", :contig_name=>"comp1_c0_seq1 len=104 path=[237:0-56 123:57-80 350:81-103]", :contig_length=>"104", :seq_name=>"gb|AC151056.2| Pan troglodytes BAC clone CH251-310D9 from chromosome y, complete sequence", :seq_length=>"135628", :accession=>"AC151056.2", :bitscore=>"58.4", :score=>"31", :expect=>"9e-06", :identities=>"35/37", :identities_percent=>"95", :gaps=>"0/37", :gaps_percent=>"0", :strand=>"Plus/Minus"}
 end
 
-#	if no hits in blast files, descendents is nil
+#	if no hits in blast files, ancestors is nil
 class NilClass
 	def collect
 		[]

@@ -4,6 +4,40 @@ Creating an app that will import a blastn output file and parse out and import t
 
 
 
+---
+=== Another piece of new info
+
+mysql data type of "float" will accept small scientific notation, however, 2e-64 will be converted to 0.  
+"Double" will hold it though.  I'm checking to see where the line is.  I need to change the data type
+of the expect column.
+
+
+Found this in a comment, but can't find it in any actual documentation.  
+I am rather confused by the multiple ranges.
+
+ DOUBLE[(M,D)] [ZEROFILL] holds double-precision numeric values, pretty similar to FLOAT double-precision, except for its allowable range, which is -1.7976931348623157E+308 to -2.2250738585072014E-308, 0, and 2.2250738585072014E-308 to 1.7976931348623157E+308.
+
+ FLOAT[(M[,D])] [ZEROFILL] stores floating point numbers in the range of -3.402823466E+38 to -1.175494351E-38 and 1.175494351E-38 to 3.402823466E+38. If precision isn't specified, or <= 24, it's SINGLE precision, otherwise FLOAT is DOUBLE precision. When specified alone, precision can range from 0 to 53. If the scale is defined, too, precision may be up to 255, scale up to 253.
+
+
+http://dev.mysql.com/doc/refman/5.7/en/numeric-type-overview.html
+https://mariadb.com/kb/en/double/
+https://mariadb.com/kb/en/float/
+
+I'm not sure what the limits in ruby or sunspot would be, but I suppose that I should check.
+
+Ruby seems to be ok down to 1e-323
+
+ irb(main):016:0> 1e-323
+ => 1.0e-323
+ irb(main):017:0> 1e-324
+ => 0.0
+
+
+Sunspot seems to also be sensitive to float and double differences
+
+ The dynamic column names are different.
+ And they also seem to muck with the data when faceting
 
 
 
@@ -131,14 +165,12 @@ How to set new value?
  config/sunspot.yml allows for adjusting max and min
 
 
-
+---
+=== Running
 
 sudo /opt/local/share/mariadb/support-files/mysql.server start
 
 bundle exec rake sunspot:solr:start 
-
-
-
 
 
 ---

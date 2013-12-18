@@ -51,6 +51,21 @@ namespace :blast_results do
 						blast_result.delete(:strand)
 					end
 
+
+#	while expect was a float, the following value seems to be the 
+#	lowest non-zero value preserved by the database
+#	 1.401298464324817e-45
+#MariaDB [taxonomy_development]> select id, expect from blast_results where expect > 0 and id < 10510697 group by expect order by expect asc limit 10;
+#+--------+------------------------+
+#| id     | expect                 |
+#+--------+------------------------+
+#|   2796 |  1.401298464324817e-45 |
+#|  41534 |  2.802596928649634e-45 |
+#|   3644 |  4.203895392974451e-45 |
+#|   2841 |  5.605193857299268e-45 |
+#|  35217 |  7.006492321624085e-45 |
+
+
 				# Score = 58.4 bits (31),  Expect = 9e-06
 				# Identities = 35/37 (95%), Gaps = 0/37 (0%)
 				# Strand=Plus/Minus
