@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20131119004552) do
     t.string  "gaps"
     t.integer "gaps_percent"
     t.string  "strand"
+    t.string  "accession_prefix"
     t.string  "accession"
   end
 
