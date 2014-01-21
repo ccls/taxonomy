@@ -47,6 +47,7 @@ gem "will_paginate"
 
 #gem "awesome_nested_set"
 
+#	20140117 - Stick with java 1.6.  java 1.7 causes grief.
 #	2.1.0 doesn't seem to actually start
 gem 'sunspot_rails', '= 2.0.0'
 gem 'sunspot_solr', '= 2.0.0'
