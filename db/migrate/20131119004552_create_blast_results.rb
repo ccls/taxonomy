@@ -12,12 +12,17 @@ class CreateBlastResults < ActiveRecord::Migration
 			t.integer :score
 			#	float worked for most, but less than ~1e-38 get converted to 0
 			#	double seems to extend that down to ~2e-308, and I haven't seen any that low.
-			t.double :expect
+#			t.double :expect
+#	rails doesn't have a method for double, but float with limit 53 seems to work
+#	for some reason, ":limit => 53" isn't copied into the schema.rb
+#		fortunately, I don't really ever use it.
+			t.float :expect, :limit => 53
 			t.string :identities
 			t.integer :identities_percent
 			t.string :gaps
 			t.integer :gaps_percent
 			t.string :strand
+			t.string :accession_prefix
 			t.string :accession
 		end
 		add_index :blast_results, :file_name
