@@ -16,7 +16,7 @@ module Sunspot::Type
 end
 
 class BlastResult < ActiveRecord::Base
-	attr_accessible :accession, :bitscore, :contig_name, :contig_length,
+	attr_accessible :accession, :accession_prefix, :bitscore, :contig_name, :contig_length,
 		:contig_description, :expect, :file_name, :gaps, :gaps_percent,
 		:identities, :identities_percent, :score, :seq_name, :seq_length, :strand
 
@@ -60,6 +60,24 @@ class BlastResult < ActiveRecord::Base
 #pdb|3IZT|B  Chain B, Structural Insights Into Cognate Vs. Near-Co...  78.7    8e-12
 #>pdb|3IZT|B Chain B, Structural Insights Into Cognate Vs. Near-Cognate Discrimination
 
+
+#>pdb|1VSP|WW Chain w, Interactions And Dynamics Of The Shine-Dalgarno Helix 
+#>pdb|1VSA|WW Chain w, Crystal Structure Of A 70s Ribosome-Trna Complex Reveals 
+#>pdb|3CW1|VV Chain v, Crystal Structure Of Human Spliceosomal U1 Snrnp
+
+	def self.correct_pdb_accession_nos
+		BlastResult.where(BlastResult.arel_table[:seq_name].matches("pdb|%")).find_each do |b|
+			seq_name_parts = b.seq_name.split('|')
+			suffix=seq_name_parts[2].split()[0]	#	some are 2 chars
+			new_seq_name = "#{seq_name_parts[1]}_#{suffix}"
+			puts b.accession
+			puts new_seq_name
+			b.update_column( :accession, new_seq_name )
+			b.index
+		end
+		Sunspot.commit
+	end
+
 	def ancestors
 		@ancestors ||= ( node.try(:ancestors) || [] )
 	end
@@ -95,11 +113,29 @@ class BlastResult < ActiveRecord::Base
 #	May want to index the node left and right?  All of the ancestors really slows down indexing.
 #
 
+	add_sunspot_column( :gi, :type => :integer,
+		:meth => ->(s){ s.identifier.try(:gi) })
+	add_sunspot_column( :parent_taxid, :type => :integer,
+		:meth => ->(s){ s.node.try(:parent_taxid) })
+	add_sunspot_column( :taxid, :type => :integer,
+		:meth => ->(s){ s.identifier.try(:taxid) })
+	add_sunspot_column( :node_left, :type => :integer,
+		:meth => ->(s){ s.node.try(:left) })
+	add_sunspot_column( :node_right, :type => :integer,
+		:meth => ->(s){ s.node.try(:right) })
+
+
+
+
 	#	NOTE index gi or taxid to show NULLs, but can't really facet on this.  Too many!
 	add_sunspot_column( :identifier_found, :facetable => true,
 		:meth => ->(s){ ( s.identifier.present? ) ? 'Yes' : 'No' } )
 
 	#	NOTE also, some taxids extracted from the nt database, don't exist in the TaxDump data??
+	add_sunspot_column( :name_found, :facetable => true,
+		:meth => ->(s){ ( s.name.present? ) ? 'Yes' : 'No' } )
+	add_sunspot_column( :node_found, :facetable => true,
+		:meth => ->(s){ ( s.node.present? ) ? 'Yes' : 'No' } )
 
 
 
