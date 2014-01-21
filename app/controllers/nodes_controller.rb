@@ -4,7 +4,8 @@ class NodesController < ApplicationController
 	def index
 		params[:parent_taxid] ||= 1
 		@node = Node.where(:taxid => params[:parent_taxid]).first
-		@descendants = @node.descendants
+#		@descendants = @node.descendants
+		@ancestors = @node.ancestors
 		@nodes = @node.children
 
 #

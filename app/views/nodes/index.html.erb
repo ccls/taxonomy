@@ -13,7 +13,7 @@
     <th></th>
   </tr>
 
-<% (@descendants + [@node] + @nodes).compact.each do |node| %>
+<% (@ancestors + [@node] + @nodes).compact.each do |node| %>
   <tr class='<%= ( node.parent_taxid.to_s == params[:parent_taxid] ) ? 'parent' : 'other' %>' >
     <td><%= node.parent_taxid %></td>
     <td><%= link_to node.taxid, { :parent_taxid => node.taxid } %></td>
