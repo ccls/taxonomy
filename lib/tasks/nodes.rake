@@ -147,6 +147,46 @@ namespace :nodes do
 		puts Time.now
 	end	#	task :import => :environment do 
 
+
+
+
+	def nodes_to_json(nodes)
+		nodes.each do |node|
+			print "#{' '*node.depth}{\"name\": \"#{node.scientific_name.to_s}\""
+				print ",\"size\": 1"
+			if node.children.present? and node.depth < 4
+				print ",\n"
+				puts "#{' '*node.depth} \"children\": ["
+				nodes_to_json(node.children)
+				puts "#{' '*node.depth}]"
+			else
+#				print "\n"
+#				print ",\"size\": #{(node.rgt - node.lft + 1)/2}"
+#				print ",\"size\": 1"
+			end
+			if node == nodes.last
+				puts "#{' '*node.depth}}"
+			else
+				puts "#{' '*node.depth}},"
+			end
+		end
+	end
+
+#	"sunburst" and "partition" json styles don't quite have the same expectations
+#	The "partition" style requires size and a single root value, but not []
+#	The "sunburst" style doesn't use size, but tolerates it presences.
+#		It also seems to require a [] wrapper.
+#	Its all in the parsing I guess, as different people write the javascript.
+
+	task :to_json => :environment do
+#		puts "["
+#		Node.roots.each do |node|
+#			nodes_to_json(node.children)
+#		end
+		nodes_to_json(Node.roots)
+#		puts "]"
+	end
+
 end	#	namespace :nodes do
 end	#	namespace :app
 
