@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.getJSON demo</title>
+<style>
+div.node {
+	display:inline-block;
+	border: 1px solid black;
+}
+</style>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+
+var build_depth = function(depth,data){
+	$('#depth_'+depth).remove();
+	$('<div/>',{"id": 'depth_'+depth, "class": "node"}).appendTo("#depth_"+(depth-1));
+
+//{"id":1,"name":"root","taxid":1,"left":1,"right":2185286,"children":[{"id":8353,"name":"Viruses","taxid":10239},{"id":10012,"name":"Viroids","taxid":12884},{"id":10034,"name":"unclassified sequences","taxid":12908},{"id":12227,"name":"other sequences","taxid":28384},{"id":102201,"name":"cellular organisms","taxid":131567}]}
+
+ var items = [];
+	children = data.children;
+	$.each( data.children, function( index, child ) {
+		items.push( "<li id='" + child.id + "'>" + child.name + "</li>" );
+	});
+	$( "<ul/>", {
+		"class": "my-new-list",
+		html: items.join( "" )
+	}).appendTo( "#depth_"+depth );
+
+};
+
+var clicked = function(id,depth){
+	$.getJSON( "/nodes/"+id+".json", function(data) {
+		build_depth(depth,data);
+	})
+};
+
+jQuery(function(){
+	$('body').on("click", "li", function(){
+		id=$(this).attr('id');
+		depth=parseInt($(this).parent().parent('div').attr('id').split('_')[1])+1;
+		clicked(id,depth);
+	});
+	clicked(1,1);
+});
+
+
+</script>
+</head>
+<body>
+<div id='nodes'>
+<div id='depth_0' class='node'></div>
+</div>
+</body>
+</html>

@@ -1,4 +1,5 @@
 class NodesController < ApplicationController
+
 	# GET /nodes
 	# GET /nodes.json
 	def index
@@ -25,7 +26,12 @@ class NodesController < ApplicationController
 
 		respond_to do |format|
 			format.html # show.html.erb
-			format.json { render json: @node }
+			format.json do
+				render json: { :id => @node.id, :name => @node.scientific_name.to_s, :taxid => @node.taxid,
+					:left => @node.lft, :right => @node.rgt,
+					:children => @node.children.collect{|n| 
+						{ :id => n.id, :name => n.scientific_name.to_s, :taxid => n.taxid }  } }
+			end
 		end
 	end
 

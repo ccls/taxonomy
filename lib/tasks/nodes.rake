@@ -153,8 +153,8 @@ namespace :nodes do
 	def nodes_to_json(nodes)
 		nodes.each do |node|
 			print "#{' '*node.depth}{\"name\": \"#{node.scientific_name.to_s}\""
-				print ",\"size\": 1"
-			if node.children.present? and node.depth < 4
+				print ",\"size\": #{node.children_count+1}"
+			if node.children.present? and node.depth < 6
 				print ",\n"
 				puts "#{' '*node.depth} \"children\": ["
 				nodes_to_json(node.children)

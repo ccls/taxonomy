@@ -119,6 +119,8 @@ class BlastResult < ActiveRecord::Base
 		:meth => ->(s){ s.node.try(:parent_taxid) })
 	add_sunspot_column( :taxid, :type => :integer,
 		:meth => ->(s){ s.identifier.try(:taxid) })
+	add_sunspot_column( :node_depth, :type => :integer,
+		:meth => ->(s){ s.node.try(:depth) })
 	add_sunspot_column( :node_left, :type => :integer,
 		:meth => ->(s){ s.node.try(:left) })
 	add_sunspot_column( :node_right, :type => :integer,
