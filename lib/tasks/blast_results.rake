@@ -6,7 +6,14 @@ namespace :blast_results do
 		env_required('file')
 #		file_required(ENV['file'])
 
-		Dir[ ENV['file'] ].each do |file|
+
+#	bundle exec rake app:blast_results:import file="/Volumes/cube/working/output/fallon_*/trinity_non_human_*.blastn.txt"
+
+
+		files = Dir[ ENV['file'] ]
+		puts files.inspect
+
+		files.each do |file|
 
 			filename = file.dup
 			filename.gsub!("/Volumes/cube/working/output/","")
@@ -34,6 +41,14 @@ namespace :blast_results do
 					blast_result[:seq_name]=$1
 					blast_result[:seq_length]=$2
 					blast_result[:accession]=blast_result[:seq_name].split('|')[1]
+
+					seq_name_parts = blast_result[:seq_name].split('|')
+					blast_result[:accession_prefix]=seq_name_parts[0]
+					blast_result[:accession]=seq_name_parts[1]
+					if( blast_result[:accession_prefix] == 'pdb' )
+						blast_result[:accession] << "_#{seq_name_parts[2].split()[0]}"	# some are 2 chars
+					end
+
 					line=''
 				elsif( l.match(/^>/) )
 					line=l.chomp
@@ -69,6 +84,39 @@ namespace :blast_results do
 				# Score = 58.4 bits (31),  Expect = 9e-06
 				# Identities = 35/37 (95%), Gaps = 0/37 (0%)
 				# Strand=Plus/Minus
+
+
+
+
+
+#	NEW TODO !
+#	Occassionally, one query sequence will match something, but have a large gap.
+#	Instead of treating it as a gap, it does something like the following.  
+#	What happens if more than one gap?  Which score is correct? First? Last?
+#	The blastn summary uses the first stats.
+#
+#>ref|XM_003826044.1| PREDICTED: Pan paniscus matrix metallopeptidase 9 (gelatinase 
+#B, 92kDa gelatinase, 92kDa type IV collagenase) (MMP9), mRNA
+#Length=2374
+#
+# Score =  102 bits (55),  Expect = 4e-19
+# Identities = 55/55 (100%), Gaps = 0/55 (0%)
+# Strand=Plus/Minus
+#
+#Query  1     TGCGTGTCCAAAGGCACCCCGGGGAACATCCGGTCCACCTCGCTGGCGCTCCGGG  55
+#             |||||||||||||||||||||||||||||||||||||||||||||||||||||||
+#Sbjct  2039  TGCGTGTCCAAAGGCACCCCGGGGAACATCCGGTCCACCTCGCTGGCGCTCCGGG  1985
+#
+#
+# Score = 97.1 bits (52),  Expect = 2e-17
+# Identities = 52/52 (100%), Gaps = 0/52 (0%)
+# Strand=Plus/Minus
+#
+#Query  50    TCCGGGAACTCACGCGCCAGTAGAAGCGGTCCTGGCAGAAATAGGCTTTCTC  101
+#             ||||||||||||||||||||||||||||||||||||||||||||||||||||
+#Sbjct  2110  TCCGGGAACTCACGCGCCAGTAGAAGCGGTCCTGGCAGAAATAGGCTTTCTC  2059
+#
+#
 
 				elsif( l.match(/^ Score =\s+(.+) bits \((\d+)\),  Expect = (.+)$/) )
 					blast_result[:bitscore]=$1
