@@ -7,6 +7,13 @@
 div.node {
 	display:inline-block;
 	border: 1px solid black;
+	vertical-align: top;
+}
+div.node ul {
+	display:inline-block;
+}
+div.node ul li.selected {
+	background-color: yellow;
 }
 </style>
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -17,10 +24,18 @@ var build_depth = function(depth,data){
 	$('<div/>',{"id": 'depth_'+depth, "class": "node"}).appendTo("#depth_"+(depth-1));
 
 //{"id":1,"name":"root","taxid":1,"left":1,"right":2185286,"children":[{"id":8353,"name":"Viruses","taxid":10239},{"id":10012,"name":"Viroids","taxid":12884},{"id":10034,"name":"unclassified sequences","taxid":12908},{"id":12227,"name":"other sequences","taxid":28384},{"id":102201,"name":"cellular organisms","taxid":131567}]}
+	
+	$('#left').html(data.left);
+	$('#right').html(data.right);
+	$('#width').html(data.right - data.left);
 
- var items = [];
-	children = data.children;
-	$.each( data.children, function( index, child ) {
+	var items = [];
+	children = data.children.sort(function(a,b){
+		var a1= a.name.toUpperCase(), b1= b.name.toUpperCase();
+		if(a1== b1) return 0;
+		return a1> b1? 1: -1;
+	});
+	$.each( children, function( index, child ) {
 		items.push( "<li id='" + child.id + "'>" + child.name + "</li>" );
 	});
 	$( "<ul/>", {
@@ -38,6 +53,8 @@ var clicked = function(id,depth){
 
 jQuery(function(){
 	$('body').on("click", "li", function(){
+		$(this).parent().find('li').removeClass('selected');
+		$(this).addClass('selected');
 		id=$(this).attr('id');
 		depth=parseInt($(this).parent().parent('div').attr('id').split('_')[1])+1;
 		clicked(id,depth);
@@ -49,6 +66,7 @@ jQuery(function(){
 </script>
 </head>
 <body>
+<p>Left: <span id='left'>&nbsp;</span> and Right: <span id='right'>&nbsp;</span> for a width of <span id='width'>&nbsp;</span></p>
 <div id='nodes'>
 <div id='depth_0' class='node'></div>
 </div>
