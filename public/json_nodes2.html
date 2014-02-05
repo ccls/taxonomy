@@ -79,6 +79,18 @@ using between works also (don't know if this is inclusive or not)
 
 BlastResult.search { with(:node_left).between([1000000,2000000]) }
 
+
+irb(main):005:0* BlastResult.search { with(:node_left).greater_than(1000000); with(:node_right).less_than_or_equal_to(2000000) }
+=> <Sunspot::Search:{:fq=>["type:BlastResult", "node_left_it:{1000000 TO *}", "node_right_it:[* TO 2000000]"], :start=>0, :rows=>30, :q=>"*:*"}>
+
+"between" seems to be written like the "or_equals_to" styles with [] and not {} 
+so my guess is that it is inclusive
+
+> s=BlastResult.search { with(:node_left).between([1000000,2000000]) }
+=> <Sunspot::Search:{:fq=>["type:BlastResult", "node_left_it:[1000000 TO 2000000]"], :start=>0, :rows=>30, :q=>"*:*"}>
+
+
+
 */
 
 </script>
