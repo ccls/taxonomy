@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery.getJSON demo</title>
+<style>
+li.selected {
+	background-color: yellow;
+}
+li.children {
+	list-style-type: none;
+}
+</style>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+//{"id":1,"name":"root","taxid":1,"left":1,"right":2185286,"children":[{"id":8353,"name":"Viruses","taxid":10239},{"id":10012,"name":"Viroids","taxid":12884},{"id":10034,"name":"unclassified sequences","taxid":12908},{"id":12227,"name":"other sequences","taxid":28384},{"id":102201,"name":"cellular organisms","taxid":131567}]}
+
+var build_sublist = function(id,data){
+	$('#left').html(data.left);
+	$('#right').html(data.right);
+	$('#width').html(data.right - data.left - 1);
+	if( data.children.length == 0 ) return ;
+
+	var items = [];
+	children = data.children.sort(function(a,b){
+		var a1= a.name.toUpperCase(), b1= b.name.toUpperCase();
+		if(a1== b1) return 0;
+		return a1> b1? 1: -1;
+	});
+	$.each( children, function( index, child ) {
+		items.push( "<li id='" + child.id + "' class='node'>" + child.name + "</li>" );
+	});
+	$("<li/>", {
+		"class": "children depth_"+data.depth,
+		html: "<ul class='depth_"+data.depth+"'>"+items.join( "" )+"</ul>"
+	}).insertAfter( "#"+id );
+};
+
+var clicked = function(id){
+//	hide all lists at or below that depth
+//	if( $("#"+id+" + li.children").length == 0 ){
+		$.getJSON( "/nodes/"+id+".json", function(data) {
+			build_sublist(id,data);
+		})
+//	} else {
+//
+//	by not calling build_sublist, doesn't set the left, right and width variables
+//
+//		$("#"+id+" + li.children").show();
+//		$("#"+id+" + li.children > ul").show();
+//	}
+};
+
+jQuery(function(){
+	//	added .node as first click would click others?
+	$('body').on("click", "li.node", function(){
+//		$(this).parent().parent().find('li').removeClass('selected');
+//		$(this).addClass('selected');
+		$('li').removeClass('selected');
+		$(this).addClass('selected');
+		id=$(this).attr('id');
+//		depth=parseInt($(this).parent().attr('class').split('_')[1])+1;
+//		$('ul.depth_'+depth).hide();
+		clicked(id);
+	});
+	clicked(1);
+});
+
+/*
+
+Need to find a way to pass these left and right values (no big deal)
+and get my sunspotter to use greater_than_or_equal_to(....) and less_than_or_equal_to(....)
+
+BlastResult.search { with(:node_left).greater_than(1000000); with(:node_right).less_than_or_equal_to(2000000) }
+
+faster with node_left and node_right or one or the other twice? seems no difference.
+
+using between works also (don't know if this is inclusive or not)
+
+BlastResult.search { with(:node_left).between([1000000,2000000]) }
+
+*/
+
+</script>
+</head>
+<body>
+<p>Left: <span id='left'>&nbsp;</span> and Right: <span id='right'>&nbsp;</span> for a width of <span id='width'>&nbsp;</span></p>
+<div id='nodes'>
+<ul><li id='1' class='children'>&nbsp;</li></ul>
+</div>
+</body>
+</html>
