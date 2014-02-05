@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131119004552) do
+ActiveRecord::Schema.define(:version => 20140204172702) do
 
   create_table "blast_results", :force => true do |t|
     t.string  "file_name"
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(:version => 20131119004552) do
   end
 
   add_index "names", ["name_class"], :name => "index_names_on_name_class"
+  add_index "names", ["taxid", "name_class"], :name => "index_names_on_taxid_and_name_class"
   add_index "names", ["taxid"], :name => "index_names_on_taxid"
 
   create_table "nodes", :force => true do |t|
@@ -61,8 +62,9 @@ ActiveRecord::Schema.define(:version => 20131119004552) do
     t.integer "lft"
     t.integer "rgt"
     t.integer "depth"
-    t.integer "children_count", :default => 0
+    t.integer "children_count",  :default => 0
     t.string  "rank"
+    t.string  "scientific_name"
   end
 
   add_index "nodes", ["lft", "rgt"], :name => "index_nodes_on_lft_and_rgt", :unique => true

@@ -26,3 +26,4 @@ versions/
 /solr/pids
 /solr/data
 
+taxonomy_development.*.sql

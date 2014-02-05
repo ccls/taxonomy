@@ -32,17 +32,17 @@ module ApplicationHelper
 		arrow = ''
 		if local_params[:order] && local_params[:order] == order
 			classes.push('sorted')
-			arrow = if dir == 'desc'
-				if File.exists?( sort_down_image ) && options[:image]
-					image_tag( File.basename(sort_down_image), :class => 'down arrow')
-				else
-					"<span class='down arrow'>&darr;</span>"
-				end
-			else
+			arrow = if dir == 'asc'
 				if File.exists?( sort_up_image ) && options[:image]
 					image_tag( File.basename(sort_up_image), :class => 'up arrow')
 				else
 					"<span class='up arrow'>&uarr;</span>"
+				end
+			else
+				if File.exists?( sort_down_image ) && options[:image]
+					image_tag( File.basename(sort_down_image), :class => 'down arrow')
+				else
+					"<span class='down arrow'>&darr;</span>"
 				end
 			end
 		end

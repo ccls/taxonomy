@@ -18,7 +18,7 @@
     <td><%= node.parent_taxid %></td>
     <td><%= link_to node.taxid, { :parent_taxid => node.taxid } %></td>
     <td><%= node.rank %></td>
-    <td><%= node.names.scientific.first %></td>
+    <td><%= node.scientific_name %></td>
     <td><%= link_to 'Show', node %></td>
     <td><%#= link_to 'Edit', edit_node_path(node) %></td>
     <td><%#= link_to 'Destroy', node, method: :delete, data: { confirm: 'Are you sure?' } %></td>

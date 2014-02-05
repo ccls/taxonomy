@@ -28,9 +28,11 @@ class NodesController < ApplicationController
 			format.html # show.html.erb
 			format.json do
 				render json: { :id => @node.id, :name => @node.scientific_name.to_s, :taxid => @node.taxid,
-					:left => @node.lft, :right => @node.rgt,
+					:left => @node.lft, :right => @node.rgt, :depth => @node.depth,
 					:children => @node.children.collect{|n| 
 						{ :id => n.id, :name => n.scientific_name.to_s, :taxid => n.taxid }  } }
+#						{ :id => n.id, :name => n.scientific_name.to_s, :taxid => n.taxid,
+#							:left => n.lft, :right => n.rgt, :depth => n.depth }  } }
 			end
 		end
 	end

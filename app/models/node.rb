@@ -44,7 +44,14 @@ class Node < ActiveRecord::Base
 	end
 
 	def scientific_name
-		names.scientific.first
+#		names.scientific.first
+
+#	created scientific_name column now so .......
+
+		if( read_attribute(:scientific_name).blank? )
+			self.update_column(:scientific_name, names.scientific.first.to_s)
+		end
+		read_attribute(:scientific_name)
 	end
 
 end

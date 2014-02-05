@@ -185,6 +185,10 @@ bundle exec rake sunspot:solr:start
 BlastResult.where(:file_name => "fallon_SFPB001B_filtered_20130731_trinity_non_human_single.blastn.txt").find_each{|b| b.delete }
 
 
+BlastResult.where(BlastResult.arel_table[:id].gt(19895047)).find_each{|b|b.index}
+
+
+
 ---
 
 Copyright (c) 2013 [Jake Wendt], released under the MIT license

@@ -122,9 +122,9 @@ class BlastResult < ActiveRecord::Base
 	add_sunspot_column( :node_depth, :type => :integer,
 		:meth => ->(s){ s.node.try(:depth) })
 	add_sunspot_column( :node_left, :type => :integer,
-		:meth => ->(s){ s.node.try(:left) })
+		:meth => ->(s){ s.node.try(:lft) })
 	add_sunspot_column( :node_right, :type => :integer,
-		:meth => ->(s){ s.node.try(:right) })
+		:meth => ->(s){ s.node.try(:rgt) })
 
 
 
