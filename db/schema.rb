@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140204172702) do
+ActiveRecord::Schema.define(:version => 20140205220828) do
 
   create_table "blast_results", :force => true do |t|
     t.string  "file_name"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20140204172702) do
     t.string  "strand"
     t.string  "accession_prefix"
     t.string  "accession"
+    t.integer "hit_order"
   end
 
   add_index "blast_results", ["accession"], :name => "index_blast_results_on_accession"

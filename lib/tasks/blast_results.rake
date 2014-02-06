@@ -1,6 +1,19 @@
 namespace :app do
 namespace :blast_results do
 
+	task :check_hit_order => :environment do
+		contig_name=''
+		hit_order=0
+		BlastResult.where(BlastResult.arel_table[:id].gteq(4648732)).find_each do |b|
+			if( contig_name != b.contig_name )
+				hit_order=0
+				contig_name = b.contig_name
+			end
+			puts "#{b.file_name} : #{contig_name} : #{hit_order+=1}"
+			b.update_attributes!(:hit_order => hit_order)
+		end
+	end
+
 	task :import => :environment do
 		puts "Start #{Time.now}"
 		env_required('file')
@@ -25,6 +38,15 @@ namespace :blast_results do
 			line=''
 			hits_found=true
 
+
+
+#
+#
+#		Seems that having a hit_rank or hit_order may be nice as well
+#
+#
+			hit_order=0
+
 			(f=File.open(file,'rb')).each do |l|
 				line=line+l.chomp
 
@@ -34,10 +56,12 @@ namespace :blast_results do
 					blast_result[:contig_description]=$1
 					blast_result[:contig_length]=$2
 					blast_result[:contig_name]=blast_result[:contig_description].split(/\s+/)[0]
+					hit_order=0
 					line=''
 				elsif( l.match(/Query= /) )
 					line=l.chomp
 				elsif( line.match(/^>(.*)Length=(\d+)$/) )
+					blast_result[:hit_order]=(hit_order+=1)
 					blast_result[:seq_name]=$1
 					blast_result[:seq_length]=$2
 					blast_result[:accession]=blast_result[:seq_name].split('|')[1]

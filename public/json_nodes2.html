@@ -15,9 +15,11 @@ li.children {
 <script>
 //{"id":1,"name":"root","taxid":1,"left":1,"right":2185286,"children":[{"id":8353,"name":"Viruses","taxid":10239},{"id":10012,"name":"Viroids","taxid":12884},{"id":10034,"name":"unclassified sequences","taxid":12908},{"id":12227,"name":"other sequences","taxid":28384},{"id":102201,"name":"cellular organisms","taxid":131567}]}
 
+var json_data = {};
+
 var build_sublist = function(id,data){
-	$('#left').html(data.left);
-	$('#right').html(data.right);
+	$('#left').val(data.left);
+	$('#right').val(data.right);
 	$('#width').html(data.right - data.left - 1);
 	if( data.children.length == 0 ) return ;
 
@@ -30,6 +32,10 @@ var build_sublist = function(id,data){
 	$.each( children, function( index, child ) {
 		items.push( "<li id='" + child.id + "' class='node'>" + child.name + "</li>" );
 	});
+
+	//	removing, until i find a better way to not duplicate
+	$('#'+id + ' + li.children').remove()
+
 	$("<li/>", {
 		"class": "children depth_"+data.depth,
 		html: "<ul class='depth_"+data.depth+"'>"+items.join( "" )+"</ul>"
@@ -37,13 +43,14 @@ var build_sublist = function(id,data){
 };
 
 var clicked = function(id){
-//	hide all lists at or below that depth
-//	if( $("#"+id+" + li.children").length == 0 ){
-		$.getJSON( "/nodes/"+id+".json", function(data) {
-			build_sublist(id,data);
-		})
-//	} else {
-//
+		if( !json_data[id] ){
+			$.getJSON( "/nodes/"+id+".json", function(data) {
+				json_data[id] = data;
+			}).done(function(){ build_sublist(id,json_data[id]); });
+		} else {
+			build_sublist(id,json_data[id]);
+		}
+
 //	by not calling build_sublist, doesn't set the left, right and width variables
 //
 //		$("#"+id+" + li.children").show();
@@ -96,7 +103,14 @@ so my guess is that it is inclusive
 </script>
 </head>
 <body>
-<p>Left: <span id='left'>&nbsp;</span> and Right: <span id='right'>&nbsp;</span> for a width of <span id='width'>&nbsp;</span></p>
+
+<form action='/sunspot/blast_results' method='get'>
+<label>Left:</label><input id='left' name='node_left[]' type='text'/>
+<label>Right:</label><input id='right' name='node_left[]' type='text'/>
+<input name='node_left_op' type='hidden' value='BETWEEN'/>
+<p> for a width of <span id='width'>&nbsp;</span></p>
+<input type='submit' value='start sunspot with this'/></form>
+
 <div id='nodes'>
 <ul><li id='1' class='children'>&nbsp;</li></ul>
 </div>

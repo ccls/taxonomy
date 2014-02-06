@@ -17,7 +17,7 @@ end
 
 class BlastResult < ActiveRecord::Base
 	attr_accessible :accession, :accession_prefix, :bitscore, :contig_name, :contig_length,
-		:contig_description, :expect, :file_name, :gaps, :gaps_percent,
+		:contig_description, :expect, :file_name, :gaps, :gaps_percent, :hit_order,
 		:identities, :identities_percent, :score, :seq_name, :seq_length, :strand
 
 	belongs_to :identifier, :foreign_key => :accession, :primary_key => :accession
@@ -90,6 +90,7 @@ class BlastResult < ActiveRecord::Base
 
 	add_sunspot_column( :id, :type => :integer, :default => true )
 	add_sunspot_column( :file_name, :facetable => true, :default => true )
+	add_sunspot_column( :hit_order, :type => :integer, :facetable => true, :default => true )
 	add_sunspot_column( :accession, :default => true )
 	add_sunspot_column( :name, :facetable => true,
 		:meth => ->(s){ s.names.scientific.first || 'NULL?' } )
@@ -217,6 +218,7 @@ class BlastResult < ActiveRecord::Base
 #		:meth => ->(s){ s.ancestors.collect{|a| a.scientific_name } } )
 
 	#	defaults are just string and orderable.  All others are false.
+	add_sunspot_column( :contig_name )
 	add_sunspot_column( :contig_length, :type => :integer )
 	add_sunspot_column( :bitscore, :type => :float )	#	~ 47.3 - 2141.0
 	add_sunspot_column( :score, :type => :integer )	#	~ 25 - 1159
