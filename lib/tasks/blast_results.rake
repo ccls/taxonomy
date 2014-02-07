@@ -12,6 +12,7 @@ namespace :blast_results do
 			puts "#{b.file_name} : #{contig_name} : #{hit_order+=1}"
 			b.update_attributes!(:hit_order => hit_order)
 		end
+		Sunspot.commit
 	end
 
 	task :import => :environment do

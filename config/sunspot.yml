@@ -9,7 +9,7 @@ development:
     hostname: localhost
     port: 8985
     log_level: INFO
-    max_memory: 2G
+    max_memory: 5G
 #
 #	My default was around 1G and caused 
 #		java.lang.OutOfMemoryError: Java heap space
@@ -18,6 +18,8 @@ development:
 #	java -XX:+PrintFlagsFinal -version
 #
 #	Set it to 2G here and seems to be happy
+#
+#	Now 2GB doesn't seem to be enough
 #
 
 test:
