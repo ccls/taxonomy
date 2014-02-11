@@ -4,7 +4,8 @@ namespace :blast_results do
 	task :check_hit_order => :environment do
 		contig_name=''
 		hit_order=0
-		BlastResult.where(BlastResult.arel_table[:id].gteq(4648732)).find_each do |b|
+#		BlastResult.where(BlastResult.arel_table[:id].gteq(4648732)).find_each do |b|
+		BlastResult.where(BlastResult.arel_table[:id].gteq(28383656)).find_each do |b|
 			if( contig_name != b.contig_name )
 				hit_order=0
 				contig_name = b.contig_name
