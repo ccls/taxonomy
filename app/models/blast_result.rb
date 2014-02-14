@@ -109,11 +109,6 @@ class BlastResult < ActiveRecord::Base
 			:step  => 10
 		} )
 
-
-#
-#	May want to index the node left and right?  All of the ancestors really slows down indexing.
-#
-
 	add_sunspot_column( :gi, :type => :integer,
 		:meth => ->(s){ s.identifier.try(:gi) })
 	add_sunspot_column( :parent_taxid, :type => :integer,
@@ -128,10 +123,6 @@ class BlastResult < ActiveRecord::Base
 	add_sunspot_column( :node_right, :type => :integer,
 		:meth => ->(s){ s.node.try(:rgt) })
 
-
-
-
-	#	NOTE index gi or taxid to show NULLs, but can't really facet on this.  Too many!
 	add_sunspot_column( :identifier_found, :facetable => true,
 		:meth => ->(s){ ( s.identifier.present? ) ? 'Yes' : 'No' } )
 
@@ -141,81 +132,7 @@ class BlastResult < ActiveRecord::Base
 	add_sunspot_column( :node_found, :facetable => true,
 		:meth => ->(s){ ( s.node.present? ) ? 'Yes' : 'No' } )
 
-
-
 	add_sunspot_column( :strand, :facetable => true, :default => true )
-
-#	add_sunspot_column( :ancestor_0, :facetable => true,
-#		:meth => ->(s){ s.ancestors[0].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_1, :facetable => true,
-#		:meth => ->(s){ s.ancestors[1].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_2, :facetable => true,
-#		:meth => ->(s){ s.ancestors[2].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_3, :facetable => true,
-#		:meth => ->(s){ s.ancestors[3].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_4, :facetable => true,
-#		:meth => ->(s){ s.ancestors[4].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_5, :facetable => true,
-#		:meth => ->(s){ s.ancestors[5].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_6, :facetable => true,
-#		:meth => ->(s){ s.ancestors[6].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_7, :facetable => true,
-#		:meth => ->(s){ s.ancestors[7].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_8, :facetable => true,
-#		:meth => ->(s){ s.ancestors[8].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_9, :facetable => true,
-#		:meth => ->(s){ s.ancestors[9].try(:scientific_name) } )
-#
-#	add_sunspot_column( :ancestor_10, :facetable => true,
-#		:meth => ->(s){ s.ancestors[10].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_11, :facetable => true,
-#		:meth => ->(s){ s.ancestors[11].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_12, :facetable => true,
-#		:meth => ->(s){ s.ancestors[12].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_13, :facetable => true,
-#		:meth => ->(s){ s.ancestors[13].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_14, :facetable => true,
-#		:meth => ->(s){ s.ancestors[14].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_15, :facetable => true,
-#		:meth => ->(s){ s.ancestors[15].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_16, :facetable => true,
-#		:meth => ->(s){ s.ancestors[16].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_17, :facetable => true,
-#		:meth => ->(s){ s.ancestors[17].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_18, :facetable => true,
-#		:meth => ->(s){ s.ancestors[18].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_19, :facetable => true,
-#		:meth => ->(s){ s.ancestors[19].try(:scientific_name) } )
-#
-#	add_sunspot_column( :ancestor_20, :facetable => true,
-#		:meth => ->(s){ s.ancestors[20].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_21, :facetable => true,
-#		:meth => ->(s){ s.ancestors[21].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_22, :facetable => true,
-#		:meth => ->(s){ s.ancestors[22].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_23, :facetable => true,
-#		:meth => ->(s){ s.ancestors[23].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_24, :facetable => true,
-#		:meth => ->(s){ s.ancestors[24].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_25, :facetable => true,
-#		:meth => ->(s){ s.ancestors[25].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_26, :facetable => true,
-#		:meth => ->(s){ s.ancestors[26].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_27, :facetable => true,
-#		:meth => ->(s){ s.ancestors[27].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_28, :facetable => true,
-#		:meth => ->(s){ s.ancestors[28].try(:scientific_name) } )
-#	add_sunspot_column( :ancestor_29, :facetable => true,
-#		:meth => ->(s){ s.ancestors[29].try(:scientific_name) } )
-#
-##	most are the same up to 21.
-##
-##irb(main):007:0> Node.group(:depth).count
-##   (1339.8ms)  SELECT COUNT(*) AS count_all, depth AS depth FROM `nodes` GROUP BY depth
-##=> {1=>1, 2=>5, 3=>38, 4=>1400, 5=>26355, 6=>32991, 7=>22328, 8=>38868, 9=>236408, 10=>79115, 11=>60032, 12=>12322, 13=>13901, 14=>32491, 15=>16721, 16=>35179, 17=>43427, 18=>32563, 19=>38500, 20=>29764, 21=>35103, 22=>47494, 23=>53705, 24=>9528, 25=>13095, 26=>27662, 27=>27447, 28=>20617, 29=>13825, 30=>18762, 31=>24345, 32=>18277, 33=>8812, 34=>6420, 35=>2079, 36=>4626, 37=>4037, 38=>1564, 39=>2556, 40=>261, 41=>19}
-#
-#	add_sunspot_column( :ancestors, :facetable => true, :multiple => true,
-#		:meth => ->(s){ s.ancestors.collect{|a| a.scientific_name } } )
 
 	#	defaults are just string and orderable.  All others are false.
 	add_sunspot_column( :contig_name )
