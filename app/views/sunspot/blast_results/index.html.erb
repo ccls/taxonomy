@@ -24,6 +24,7 @@
 <ul>
 <li><a id='viruses' href="javascript:void()">Viruses</a></li>
 <li><a id='bacteria' href="javascript:void()">Bacteria</a></li>
+<li><a id='primate' href="javascript:void()">Primate</a></li>
 <li><a id='none' href="javascript:void()">None</a></li>
 </ul>
 </div>
@@ -42,6 +43,11 @@ div#taxonomy > div.facet_field ul > li > a {
 </style>
 <script type="text/javascript">
 jQuery(function(){
+$('div#taxonomy ul li a#primate').click(function(){
+	$('#node_left_left').val(2132877);
+	$('#node_left_right').val(2134498);
+});
+
 $('div#taxonomy ul li a#viruses').click(function(){
 	$('#node_left_left').val(2);
 	$('#node_left_right').val(231301);

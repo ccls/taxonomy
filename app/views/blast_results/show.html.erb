@@ -1,18 +1,33 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Query:</b>
-  <%= @blast_result.query %>
+  <b>File name:</b>
+  <%= @blast_result.file_name %>
 </p>
 
 <p>
-  <b>Len:</b>
-  <%= @blast_result.len %>
+  <b>contig_name:</b>
+  <%= @blast_result.contig_name %>
 </p>
 
 <p>
-  <b>Result:</b>
-  <%= @blast_result.result %>
+  <b>contig_description:</b>
+  <%= @blast_result.contig_description %>
+</p>
+
+<p>
+  <b>contig_length:</b>
+  <%= @blast_result.contig_length %>
+</p>
+
+<p>
+  <b>seq_name:</b>
+  <%= @blast_result.seq_name %>
+</p>
+
+<p>
+  <b>seq_length:</b>
+  <%= @blast_result.seq_length %>
 </p>
 
 <p>
@@ -53,6 +68,11 @@
 <p>
   <b>Strand:</b>
   <%= @blast_result.strand %>
+</p>
+
+<p>
+  <b>Accession prefix:</b>
+  <%= @blast_result.accession_prefix %>
 </p>
 
 <p>
