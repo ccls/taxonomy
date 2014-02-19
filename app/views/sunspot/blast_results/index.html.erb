@@ -9,65 +9,6 @@
 
 		<%#= text_field_tag :q, params[:q] %>
 
-
-
-			
-<div id='taxonomy' class="facets">
-<div class="facet_toggle"><span class="ui-icon ui-icon-triangle-1-e">&nbsp;</span><a href="javascript:void()">Taxonomy</a></div>
-<div class='facet_field'>
-
-<input name="node_left_op" type="hidden" value="BETWEEN" />
-<p>
-<%= text_field_tag 'node_left[]', params['node_left'].try(:first), :id => :node_left_left  %>
-<%= text_field_tag 'node_left[]', params['node_left'].try(:last),  :id => :node_left_right %>
-</p>
-<ul>
-<li><a id='viruses' href="javascript:void()">Viruses</a></li>
-<li><a id='bacteria' href="javascript:void()">Bacteria</a></li>
-<li><a id='primate' href="javascript:void()">Primate</a></li>
-<li><a id='none' href="javascript:void()">None</a></li>
-</ul>
-</div>
-<style>
-div#taxonomy,
-div#taxonomy > div.facet_toggle {
-	border-bottom: 0px;
-}
-/* padding added to compensate for p and ul tag's margin-bottom of 1em ( too much )*/
-div#taxonomy > div.facet_field {
-	padding-bottom: 1em;
-}
-div#taxonomy > div.facet_field ul > li > a {
-	padding-left: 20px;
-}
-</style>
-<script type="text/javascript">
-jQuery(function(){
-$('div#taxonomy ul li a#primate').click(function(){
-	$('#node_left_left').val(2132877);
-	$('#node_left_right').val(2134498);
-});
-
-$('div#taxonomy ul li a#viruses').click(function(){
-	$('#node_left_left').val(2);
-	$('#node_left_right').val(231301);
-});
-
-$('div#taxonomy ul li a#bacteria').click(function(){
-	$('#node_left_left').val(247411);
-	$('#node_left_right').val(880040);
-});
-
-$('div#taxonomy ul li a#none').click(function(){
-	$('#node_left_left').val('');
-	$('#node_left_right').val('');
-});
-
-});
-</script>
-</div>
-
-
 		<%#= render 'filters' %>
 		<%= render 'facets' %>
 		<%= render 'per_page' %>
