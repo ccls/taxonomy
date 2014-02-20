@@ -88,6 +88,16 @@ class BlastResult < ActiveRecord::Base
 
 	include ActiveRecordSunspotter::Sunspotability
 
+	add_sunspot_column( :node_left, :type => :integer,
+		:label => 'Taxonomy',
+		:facetable => true,
+		:ranges => [
+			{ :name => 'Virus',    :range => 2..231301 },
+			{ :name => 'Bacteria', :range => 247411..880040 },
+			{ :name => 'Primate',  :range => 2132877..2134498 }
+		],
+		:meth => ->(s){ s.node.try(:lft) })
+
 	add_sunspot_column( :id, :type => :integer, :default => true )
 	add_sunspot_column( :file_name, :facetable => true, :default => true )
 	add_sunspot_column( :hit_order, :type => :integer, :facetable => true, :default => true )
@@ -117,34 +127,6 @@ class BlastResult < ActiveRecord::Base
 		:meth => ->(s){ s.identifier.try(:taxid) })
 	add_sunspot_column( :node_depth, :type => :integer,
 		:meth => ->(s){ s.node.try(:depth) })
-
-
-#
-#	It would be nice here if I could create fixed and named facet ranges
-#	This way would actually show some counts
-#
-#		:range => {
-#			:fixed => [ 
-#				{ :name => 'Virus', :between => [ 2, 231301] },
-#				{ :name => 'Bacteria', :between => [ 247411, 880040] },
-#				{ :name => 'Primate', :between => [ 2132877, 2134498] }
-#			]
-#
-#		or :ranges => [] would alleviate some code confusion
-#
-#	add_sunspot_column( :node_left, :type => :integer,
-#		:filterable => true,
-#		:meth => ->(s){ s.node.try(:lft) })
-
-	add_sunspot_column( :node_left, :type => :integer,
-		:label => 'Taxonomy',
-		:facetable => true,
-		:ranges => [
-			{ :name => 'Virus', :between => [ 2, 231301] },
-			{ :name => 'Bacteria', :between => [ 247411, 880040] },
-			{ :name => 'Primate', :between => [ 2132877, 2134498] }
-		],
-		:meth => ->(s){ s.node.try(:lft) })
 
 
 	add_sunspot_column( :node_right, :type => :integer,
