@@ -59,7 +59,7 @@ For example, there are a number of matches to 3IZT in the blast output.
 
 Yet, there is no extracted accession number 3IZT, but there are 3IZT_A and 3IZT_B.
 
- > grep 3IZT data/accession_gi_taxid.csv 
+ > grep 3IZT data/nt.accession_gi_taxid.csv 
  3IZT_A,326634209,83333
  3IZT_B,326634210,83333
 
@@ -70,18 +70,187 @@ What? Why?
 
 
 ---
-=== Imported data
+=== Imported Identifiers
 
 Identifiers were extracted from the ncbi nt database (>26million)
 
- > blastdbcmd -db /Volumes/cube/working/indexes/nt -entry all -outfmt '%a,%g,%T' -out accessions_gi_taxid.csv
+ > blastdbcmd -db /Volumes/cube/working/indexes/nt -entry all -outfmt '%a,%g,%T' -out nt.accessions_gi_taxid.csv
+
+
+Recently, after blasting to the viral_genomics database, I found that all of the accession numbers didn't have associated identifiers.  This is apparently due to the viral_genomics database using REFSEQ data.  I tried to extract them from the database as I did for nt but found that this database doesn't include taxids.
+
+
+
+ftp://ftp.ncbi.nih.gov/gene/DATA/
+ftp://ftp.ncbi.nih.gov/gene/DATA/gene2accession.gz
+
+
+
+#Format: tax_id GeneID status RNA_nucleotide_accession.version RNA_nucleotide_gi protein_accession.version protein_gi genomic_nucleotide_accession.version genomic_nucleotide_gi start_position_on_the_genomic_accession end_position_on_the_genomic_accession orientation assembly mature_peptide_accession.version mature_peptide_gi Symbol (tab is used as a separator, pound sign - start of a comment)
+
+sed -e 1d gene2accession | awk '{print $8","$9","$1}' | grep -vs "\-,\-" > gene2accession.accession_gi_taxid.csv &
+sort
+uniq
+
+gene2refseq is just a subset of gene2accession
+
+ftp://ftp.ncbi.nih.gov/gene/DATA/gene2refseq.gz
+sed -e 1d gene2refseq | awk '{print $8","$9","$1}' | grep -vs "\-,\-" > gene2refseq.accession_gi_taxid.csv &
+sort
+uniq
+
+Unfortunately, these datasets have a number of problems which halt data importing.  A few missing gi numbers.  A handful of duplicate accession and gi numbers with alternate taxids.  I randomly removed some offending duplicates just to get the data imported.  I still have some blast data with no associated identifier.  I think that this may be due to different accession versions.  I don't quite get this either as I vaguely remember reading that every accession number gets a new gi number so all of the old ones should still be there.
 
 
 
 
+
+
+
+gene2accession                                  recalculated daily
+---------------------------------------------------------------------------
+           This file is a comprehensive report of the accessions that are 
+           related to a GeneID.  It includes sequences from the international
+           sequence collaboration, Swiss-Prot, and RefSeq. The RefSeq subset
+           of this file is also available as gene2refseq.
+
+           Because this file is updated daily, the RefSeq subset does not 
+           reflect any RefSeq release. Versions of RefSeq RNA and protein 
+           records may be more recent than those included in an annotation
+           release (build) or those in the current RefSeq release.
+
+           To identify the annotation release/build to which the 
+           genomic RefSeqs belong, please refer to the species-specific
+           README_CURRENT_RELEASE or README_CURRENT_BUILD
+           file in the genomes ftp site:
+
+             ftp://ftp.ncbi.nih.gov/genomes/
+ 
+           For example:
+             ftp://ftp.ncbi.nih.gov/genomes/H_sapiens/README_CURRENT_RELEASE
+             ftp://ftp.ncbi.nih.gov/genomes/Ailuropoda_melanoleuca/README_CURRENT_BUILD            
+
+           More notes about this file:
+
+           tab-delimited
+           one line per genomic/RNA/protein set of sequence accessions
+           Column header line is the first line in the file.
+
+           NOTE: Because this file is comprehensive, it may include
+           some RefSeq accessions that are not current, because they are
+           part of the annotation of the current genomic assembly. In other 
+           words, the annotation of a genome is not continuous, but depends
+           on a data freeze. Sub-genomic RefSeqs, however, are updated 
+           continuously. Thus some RefSeqs may have been replaced or 
+           suppressed after a data freeze assocated with a genomic annotation. 
+           Until the release of a new genomic annotation, all
+           RefSeqs that are included in the current annotation are reported
+           in this file.
+---------------------------------------------------------------------------
+
+tax_id:
+           the unique identifier provided by NCBI Taxonomy
+           for the species or strain/isolate
+
+GeneID:
+           the unique identifier for a gene
+
+status:
+           status of the RefSeq if a refseq, else '-'
+           RefSeq values are: INFERRED, MODEL, NA, PREDICTED, PROVISIONAL,
+           REVIEWED, SUPPRESSED, VALIDATED
+
+RNA nucleotide accession.version:
+           may be null (-) for some genomes
+
+RNA nucleotide gi:
+           the gi for an RNA nucleotide accession, '-' if not applicable
+
+protein accession.version:
+           will be null (-) for RNA-coding genes
+
+protein gi:
+           the gi for a protein accession, '-' if not applicable
+
+genomic nucleotide accession.version:
+           may be null (-) 
+
+genomic nucleotide gi:
+           the gi for a genomic nucleotide accession, '-' if not applicable
+
+start position on the genomic accession:
+            position of the gene feature on the genomic accession,
+            '-' if not applicable
+            position 0-based
+
+            NOTE: this file does not report the position of each exon.
+            For positions on RefSeq contigs and chromosomes, 
+            use the seq_gene.md file in the appropriate build directory.
+            For example, for the human genome,
+            ftp://ftp.ncbi.nih.gov/genomes/H_sapiens/mapview/
+
+            This file has one line for each annotation, with the feature name, feature_id and
+            feature_type columns indicating the name and type of feature. Note that the GeneID 
+            value in the feature_id column can be used to find all locations for a gene by GeneID.
+
+            WARNING: Positions in seq_gene.md files are one-based, not 0-based
+
+            NOTE: if genes are merged after an annotation is released, there 
+            may be more than one location reported on a genomic sequence 
+            per GeneID, each resulting from the annotation before the merge.
+
+end position on the genomic accession:
+            position of the gene feature on the genomic accession,
+            '-' if not applicable
+            position 0-based
+
+            NOTE: this file does not report the position of each exon.
+            For positions on RefSeq contigs and chromosomes, 
+            use the seq_gene.md file in the appropriate build directory.
+            For example, for the human genome,
+            ftp://ftp.ncbi.nih.gov/genomes/H_sapiens/mapview/
+
+            This file has one line for each annotation, with the feature name, feature_id and
+            feature_type columns indicating the name and type of feature. Note that the GeneID 
+            value in the feature_id column can be used to find all locations for a gene by GeneID.
+
+            WARNING: Positions in seq_gene.md files are one-based, not 0-based
+
+            NOTE: if genes are merged after an annotation is released, there 
+            may be more than one location reported on a genomic sequence 
+            per GeneID, each resulting from the annotation before the merge.
+
+orientation:
+            orientation of the gene feature on the genomic accession,
+            '?' if not applicable
+
+assembly:
+            the name of the assembly
+            '-' if not applicable
+
+mature peptide accession.version:
+           will be null (-) if absent
+
+mature peptide gi:
+           the gi for a mature peptide accession, '-' if not applicable
+
+Symbol:
+           the default symbol for the gene
+
+
+
+
+
+
+
+
+
+---
+=== Imported Nodes and Names
 
 Nodes and Names came from ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
 ( I did not import all of nodes, or any of the other data. )
+( I only use the scientific name, so next time I will only import those. )
 
  *.dmp files are bcp-like dump from GenBank taxonomy database.
 
@@ -110,40 +279,6 @@ Nodes and Names came from ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
  	name_txt				-- name itself
  	unique name				-- the unique variant of this name if name not unique
  	name class				-- (synonym, common name, ...)
-
- Divisions file (division.dmp):
- 	division id				-- taxonomy database division id
- 	division cde				-- GenBank division code (three characters)
- 	division name				-- e.g. BCT, PLN, VRT, MAM, PRI...
- 	comments
-
- Genetic codes file:
- 	genetic code id				-- GenBank genetic code id
- 	abbreviation				-- genetic code name abbreviation
- 	name					-- genetic code name
- 	cde					-- translation table for this genetic code
- 	starts					-- start codons for this genetic code
-
- Deleted nodes file (delnodes.dmp):
- 	tax_id					-- deleted node id
-
- Merged nodes file (merged.dmp):
- 	old_tax_id                              -- id of nodes which has been merged
- 	new_tax_id                              -- id of nodes which is result of merging
-
- Citations file (citations.dmp):
- 	cit_id					-- the unique id of citation
- 	cit_key					-- citation key
- 	pubmed_id				-- unique id in PubMed database (0 if not in PubMed)
- 	medline_id				-- unique id in MedLine database (0 if not in MedLine)
- 	url					-- URL associated with citation
- 	text					-- any text (usually article name and authors).
- 						-- The following characters are escaped in this text by a backslash:
- 						-- newline (appear as "\n"),
- 						-- tab character ("\t"),
- 						-- double quotes ('\"'),
- 						-- backslash character ("\\").
- 	taxid_list				-- list of node ids separated by a single space
 
 
 ---

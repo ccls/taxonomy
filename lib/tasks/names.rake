@@ -40,6 +40,9 @@ namespace :names do
 		#	I'm gonna change the names and identifiers imports as well.
 		#	
 		ActiveRecord::Base.connection.execute("DELETE FROM names;");
+#
+#	I don't use anything except the scientific name, so could change this import to scientific_names.dmp
+#
 		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/names.dmp' INTO TABLE names FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\t|\n' (taxid,name_txt,name_unique,name_class);")
 
 		puts Time.now

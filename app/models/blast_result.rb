@@ -20,6 +20,11 @@ class BlastResult < ActiveRecord::Base
 		:contig_description, :expect, :file_name, :gaps, :gaps_percent, :hit_order,
 		:identities, :identities_percent, :score, :seq_name, :seq_length, :strand
 
+	#
+	#	Need a way to separate the accession number from the version in a way
+	#	that if we have NC_020081.2 in the blast result and on NC_020081.1 in the 
+	#	identifiers, or vice versa, it will work.
+	#
 	belongs_to :identifier, :foreign_key => :accession, :primary_key => :accession
 	has_many :names, :through => :identifier
 	has_one  :node , :through => :identifier

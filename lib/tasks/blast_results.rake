@@ -31,9 +31,14 @@ namespace :blast_results do
 		files.each do |file|
 
 			filename = file.dup
-			filename.gsub!("/Volumes/cube/working/output/","")
-			filename.gsub!("_filtered","")
-			filename.gsub!(/_\d{8}/,"")
+#			filename.gsub!("/Volumes/cube/working/output/","")
+#			filename.gsub!("_filtered","")
+#			filename.gsub!(/_\d{8}/,"")
+
+#			filename = filename.split('/').last
+			filename = filename.split('/')[-2..-1].join('/')
+
+
 			blast_defaults = {:file_name => filename}
 
 			blast_result = blast_defaults.dup
