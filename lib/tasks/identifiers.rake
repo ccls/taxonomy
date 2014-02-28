@@ -1,23 +1,56 @@
-#require 'csv'
+require 'csv'
 namespace :app do
 namespace :identifiers do
 
+	task :update => :environment do
+		puts Time.now
+		env_required('file')
+		(f=CSV.open( file, 'rb',{ :headers => false })).each do |line|
+			#	squish is rails
+			line.collect!(&:to_s).collect!(&:squish!)
+			puts "Processing line #{f.lineno}:#{line}"
+			identifiers = Identifier.where(:accession => line[0])
+			if identifiers.empty?
+				Identifier.create!(
+					:accession => line[0],
+					:gi => line[1],
+					:taxid => line[2]
+				)
+			else
+				identifiers.first.update_attributes!(
+					:gi => line[1],
+					:taxid => line[2]
+				)
+			end
+		end	#	(f=CSV.open(file, 'rb',{ :headers => false })).each do |line|
+	end	#	task :update => :environment do
+
+#	as individual lines, if not valid, just moves on to the next line.
+#	awk -F, {print "insert into identifiers (accession,gi,taxid) values (\""$1"\","$2","$3");"} nt_20131118.accession_gi_taxid.sorted.uniq.csv > import.sql
+#	mysql> source import.sql
+
+	#	attempt to add more identifiers from csv
+	#	If invalid, just skip it.
+	task :append => :environment do
+		puts Time.now
+		#	env_required('file')
+		(f=CSV.open("data/older/nt_20131118.accession_gi_taxid.sorted.uniq.csv",
+				'rb',{ :headers => false })).each do |line|
+			#	squish is rails
+			line.collect!(&:to_s).collect!(&:squish!)
+			puts "Processing line #{f.lineno}:#{line}"
+			# Attempt to add another.  If it is invalid it will fail, which is desired.
+			Identifier.create(
+				:accession => line[0],
+				:gi => line[1],
+				:taxid => line[2]
+			)
+		end
+		puts Time.now
+	end	#	task :append => :environment do
+
 	task :import => :environment do 
 		puts Time.now
-#		#
-#		#	THESE FILES DO NOT HAVE COLUMN HEADERS SO MUST USE INDEX
-#		#
-#		(f=CSV.open("accession_gi_taxid.csv",
-#				'rb',{ :headers => false })).each do |line|
-#			#	squish is rails
-#			line.collect!(&:to_s).collect!(&:squish!)
-#			puts "Processing line #{f.lineno}:#{line}"
-#			Identifier.create!(
-#				:accession => line[0],
-#				:gi => line[1],
-#				:taxid => line[2]
-#			)
-#		end
 
 		#
 		#	The above ruby takes over a day! (>26 million rows) (1 million rows / hour )?
@@ -135,10 +168,30 @@ namespace :identifiers do
 		#
 		#	Success!  Finally!  Now need to determine if I broke anything else.
 		#	
-		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/gene2accession.accession_gi_taxid.sorted.uniq.manual.csv' INTO TABLE identifiers FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (accession,gi,taxid);")
+		#	So many gaps.
+		#
+		#	ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/gene2accession.accession_gi_taxid.sorted.uniq.manual.csv' INTO TABLE identifiers FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (accession,gi,taxid);")
+		#
+		#	Updating NCBI databases, extracting and combining all accession/gi/taxids
+		#	There were 14 duplicates after combining.  
+		#	I kept the entries from the other_genomic db which is newer than the refseq_genomic db.
+		#
+		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/20140227/all.accession_gi_taxid.sorted.uniq.manual.csv' INTO TABLE identifiers FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (accession,gi,taxid);")
 
 		puts Time.now
 	end	#	task :import => :environment do 
+
+
+#	task :add_taxids_to_viral_genomic => :environment do
+#		(f=CSV.open("data/viral_genomic.accession_gi_taxid.csv.no_taxids",
+#				'rb',{ :headers => false })).each do |line|
+##grep NC_018104.1 gene2refseq.accession_gi_taxid.sorted.uniq.csv 
+##NC_018104.1,394743611,167947
+#			refseq=`grep #{line[0]} data/gene2refseq.accession_gi_taxid.sorted.uniq.csv`
+#puts "#{line},#{refseq}"
+#
+#		end	#	(f=CSV.open("viral_genomic.accession_gi_taxid.csv.no_taxids",
+#	end	#	task :add_taxids_to_viral_genomic => :environment do
 
 end	#	namespace :identifiers do
 end	#	namespace :app

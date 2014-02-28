@@ -74,7 +74,7 @@ What? Why?
 
 Identifiers were extracted from the ncbi nt database (>26million)
 
- > blastdbcmd -db /Volumes/cube/working/indexes/nt -entry all -outfmt '%a,%g,%T' -out nt.accessions_gi_taxid.csv
+ > blastdbcmd -db /Volumes/cube/working/indexes/nt -entry all -outfmt '%a,%g,%T' -out nt.accession_gi_taxid.csv
 
 
 Recently, after blasting to the viral_genomics database, I found that all of the accession numbers didn't have associated identifiers.  This is apparently due to the viral_genomics database using REFSEQ data.  I tried to extract them from the database as I did for nt but found that this database doesn't include taxids.
@@ -236,6 +236,28 @@ mature peptide gi:
 
 Symbol:
            the default symbol for the gene
+
+
+
+
+
+
+
+
+
+
+OK then.  So.  Lots of little problems and gaps.  Downloading a newer blast nt database
+along with human_genomic, refseq_genomic and other_genomic.  I'm going to extract
+accession/gi/taxid from all and see if that works.
+
+ update_blastdb.pl nt
+ update_blastdb.pl refseq_genomic
+ update_blastdb.pl other_genomic
+ update_blastdb.pl human_genomic
+
+ cat refseq_genomic.??.tar.gz.md5 > refseq_genomic.md5list
+ gmd5sum -c refseq_genomic.md5list
+ echo 'for file in `ls refseq_genomic.??.tar.gz` ; do tar xfzv $file ; done' | bash
 
 
 
