@@ -303,6 +303,37 @@ Nodes and Names came from ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
  	name class				-- (synonym, common name, ...)
 
 
+
+
+
+
+After downloading newer versions of names and nodes, 
+
+ bundle exec rake app:names:import
+ bundle exec rake app:nodes:import
+ bundle exec rake app:nodes:import_scientific_names
+ bundle exec rake app:nodes:build_nested_set
+ bundle exec rake sunspot:reindex
+
+
+This will require updating of the preset taxonomy ranges in BlastResults.
+Get the lft and rgt values from ....
+
+ Node.where(:scientific_name => "Viruses").first (taxid 10239)
+
+ Node.where(:scientific_name => "Bacteria").order('depth ASC').first		#	two actually!!! (taxid 2)
+
+ Node.where(:scientific_name => "Homo Sapiens").first.taxid  (really deep) (taxid 9606)
+ => 9606
+ Node.where(:taxid => 9606).first.parent.parent.parent.parent.parent.parent.parent.parent.taxid
+ => 9443
+ Primates (taxid 9443)
+
+May have to check the preset taxids for Virus and such, but I would expect the taxids to NOT change, but the lft and rgt very much may have.
+
+
+
+
 ---
 === Java Error
 

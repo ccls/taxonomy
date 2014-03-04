@@ -51,6 +51,18 @@ namespace :nodes do
 		set_left_children_right(Node.roots)
 	end
 
+	#	having the name in the node just speeds things up a bit
+	task :import_scientific_names => :environment do
+		puts Time.now
+		last_id = Node.last.id
+		Node.find_each do |node|
+			print "\rUpdating node #{node.id} ... #{last_id}"
+			node.update_column(:scientific_name, node.names.scientific.first.to_s)
+		end
+		puts
+		puts Time.now
+	end
+
 
 #	#
 #	#	by level 9, the mysql command is apparently too long
@@ -130,9 +142,10 @@ namespace :nodes do
 		#	The below sql takes less than 2 minutes.
 		#	I'm gonna change the names and identifiers imports as well.
 		#	
-		ActiveRecord::Base.connection.execute("DELETE FROM nodes;");
-#		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (id,parent_id,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
-		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (taxid,parent_taxid,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
+		# Why DELETE? LOAD DATA appends to table (despite what I've read).
+		ActiveRecord::Base.connection.execute("DELETE FROM nodes;");	
+
+		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/20140303/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (taxid,parent_taxid,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
 
 		#	acts as nested set needs the roots to have null parent_id's
 		#	only 1 here

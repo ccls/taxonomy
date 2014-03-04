@@ -1,6 +1,13 @@
 namespace :app do
 namespace :blast_results do
 
+	task :index_select => :environment do
+		BlastResult.where(BlastResult.arel_table[:file_name].matches("PBSF120213_SF02%")).find_each do |b|
+			b.index
+		end
+		Sunspot.commit
+	end
+
 	task :check_hit_order => :environment do
 		contig_name=''
 		hit_order=0

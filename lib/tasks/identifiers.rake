@@ -5,7 +5,7 @@ namespace :identifiers do
 	task :update => :environment do
 		puts Time.now
 		env_required('file')
-		(f=CSV.open( file, 'rb',{ :headers => false })).each do |line|
+		(f=CSV.open( ENV['file'], 'rb',{ :headers => false })).each do |line|
 			#	squish is rails
 			line.collect!(&:to_s).collect!(&:squish!)
 			puts "Processing line #{f.lineno}:#{line}"
@@ -33,19 +33,24 @@ namespace :identifiers do
 	#	If invalid, just skip it.
 	task :append => :environment do
 		puts Time.now
-		#	env_required('file')
-		(f=CSV.open("data/older/nt_20131118.accession_gi_taxid.sorted.uniq.csv",
+		env_required('file')
+		accessions=[]
+		#(f=CSV.open("data/older/nt_20131118.accession_gi_taxid.sorted.uniq.csv",
+		(f=CSV.open( ENV['file'],
 				'rb',{ :headers => false })).each do |line|
 			#	squish is rails
 			line.collect!(&:to_s).collect!(&:squish!)
 			puts "Processing line #{f.lineno}:#{line}"
+			accessions.push(line[0])
 			# Attempt to add another.  If it is invalid it will fail, which is desired.
 			Identifier.create(
 				:accession => line[0],
 				:gi => line[1],
 				:taxid => line[2]
 			)
-		end
+		end	#	(f=CSV.open( ENV['file'],
+		BlastResult.where(:accession => accessions).index
+		Sunspot.commit
 		puts Time.now
 	end	#	task :append => :environment do
 
@@ -59,7 +64,7 @@ namespace :identifiers do
 		#
 		#	Just did this import again with a larger file and it took ... hours?
 		#	
-		ActiveRecord::Base.connection.execute("DELETE FROM identifiers;");
+		ActiveRecord::Base.connection.execute("DELETE FROM identifiers;");	#	don't think this is needed
 		#		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nt.accession_gi_taxid.csv' INTO TABLE identifiers FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (accession,gi,taxid);")
 		#
 		#		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nt_and_g2a.accession_gi_taxid.sorted.uniq.csv' INTO TABLE identifiers FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (accession,gi,taxid);")

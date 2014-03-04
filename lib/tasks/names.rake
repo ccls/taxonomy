@@ -39,11 +39,12 @@ namespace :names do
 		#	The below sql takes less than 2 minutes.
 		#	I'm gonna change the names and identifiers imports as well.
 		#	
-		ActiveRecord::Base.connection.execute("DELETE FROM names;");
-#
-#	I don't use anything except the scientific name, so could change this import to scientific_names.dmp
-#
-		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/names.dmp' INTO TABLE names FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\t|\n' (taxid,name_txt,name_unique,name_class);")
+		#	Why DELETE? LOAD DATA appends to table (despite what I've read).
+		ActiveRecord::Base.connection.execute("DELETE FROM names;");	
+		#
+		#	I don't use anything except the scientific name, so could change this import to scientific_names.dmp
+		#
+		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/20140303/scientific_names.dmp' INTO TABLE names FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\t|\n' (taxid,name_txt,name_unique,name_class);")
 
 		puts Time.now
 	end	#	task :import => :environment do 
