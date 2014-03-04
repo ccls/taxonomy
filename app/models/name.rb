@@ -14,3 +14,6 @@ __END__
 
 1:1 with "scientific name" only
 
+
+Once the scientific name has been imported to the node, this model is unused.
+

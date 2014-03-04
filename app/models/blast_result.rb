@@ -26,7 +26,7 @@ class BlastResult < ActiveRecord::Base
 	#	identifiers, or vice versa, it will work.
 	#
 	belongs_to :identifier, :foreign_key => :accession, :primary_key => :accession
-	has_many :names, :through => :identifier
+#	has_many :names, :through => :identifier
 	has_one  :node , :through => :identifier
 
 	scope :stray_accession_numbers, ->{ left_joins(:identifier).where(:"identifiers.gi" => nil) }
@@ -93,13 +93,30 @@ class BlastResult < ActiveRecord::Base
 
 	include ActiveRecordSunspotter::Sunspotability
 
+#  Node.where(:scientific_name => "Viruses").first (taxid 10239)
+#		lft: 2011260, rgt: 2248987
+# 
+#  Node.where(:scientific_name => "Bacteria").order('depth ASC').first    # two actually!!! (taxid 2)
+#		lft: 191, rgt: 670200
+# 
+#  Node.where(:scientific_name => "Homo Sapiens").first.taxid  (really deep) (taxid 9606)
+#  => 9606
+#  Node.where(:taxid => 9606).first.parent.parent.parent.parent.parent.parent.parent.parent.taxid
+#  => 9443
+#  Primates (taxid 9443)
+#		lft: 1338132, rgt: 1339757
+
+	#	These ranges WILL NEED UPDATED if the nodes are reimported.
 	add_sunspot_column( :node_left, :type => :integer,
 		:label => 'Taxonomy',
 		:facetable => true,
-		:ranges => [
-			{ :name => 'Virus',    :range => 2..231301 },
-			{ :name => 'Bacteria', :range => 247411..880040 },
-			{ :name => 'Primate',  :range => 2132877..2134498 }
+		:ranges => [		
+#			{ :name => 'Virus',    :range => 2..231301 },
+#			{ :name => 'Bacteria', :range => 247411..880040 },
+#			{ :name => 'Primate',  :range => 2132877..2134498 }
+			{ :name => 'Virus',    :range => 2011260...2248987 },
+			{ :name => 'Bacteria', :range => 191...670200 },
+			{ :name => 'Primate',  :range => 1338132...1339757 }
 		],
 		:meth => ->(s){ s.node.try(:lft) })
 
@@ -108,7 +125,8 @@ class BlastResult < ActiveRecord::Base
 	add_sunspot_column( :hit_order, :type => :integer, :facetable => true, :default => true )
 	add_sunspot_column( :accession, :default => true )
 	add_sunspot_column( :name, :facetable => true,
-		:meth => ->(s){ s.names.scientific.first || 'NULL?' } )
+		:meth => ->(s){ s.node.try(:scientific_name) || 'NULL?' } )
+#		:meth => ->(s){ s.names.scientific.first || 'NULL?' } )
 #
 #	I changed this to double, but then the facets went away?????
 #		(that's because the name of the column changed and was therefore empty.)
@@ -125,7 +143,8 @@ class BlastResult < ActiveRecord::Base
 		} )
 
 	add_sunspot_column( :gi, :type => :integer,
-		:meth => ->(s){ s.identifier.try(:gi) })
+		:meth => ->(s){ s.identifier.try(:gi) },
+		:link_to => ->(s){ "http://www.ncbi.nlm.nih.gov/nuccore/#{s.identifier.try(:gi)}" })
 	add_sunspot_column( :parent_taxid, :type => :integer,
 		:meth => ->(s){ s.node.try(:parent_taxid) })
 	add_sunspot_column( :taxid, :type => :integer,
@@ -141,8 +160,11 @@ class BlastResult < ActiveRecord::Base
 		:meth => ->(s){ ( s.identifier.present? ) ? 'Yes' : 'No' } )
 
 	#	NOTE also, some taxids extracted from the nt database, don't exist in the TaxDump data??
-	add_sunspot_column( :name_found, :facetable => true,
-		:meth => ->(s){ ( s.name.present? ) ? 'Yes' : 'No' } )
+	#	don't know how this ever worked.  There is no "name" attribute or association.
+	#	must've been using the sunspot column name?
+#	add_sunspot_column( :name_found, :facetable => true,
+#		:meth => ->(s){ ( s.name.present? ) ? 'Yes' : 'No' } )	
+
 	add_sunspot_column( :node_found, :facetable => true,
 		:meth => ->(s){ ( s.node.present? ) ? 'Yes' : 'No' } )
 
