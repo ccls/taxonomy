@@ -5,24 +5,30 @@ namespace :identifiers do
 	task :update => :environment do
 		puts Time.now
 		env_required('file')
+		accessions=[]
 		(f=CSV.open( ENV['file'], 'rb',{ :headers => false })).each do |line|
 			#	squish is rails
 			line.collect!(&:to_s).collect!(&:squish!)
 			puts "Processing line #{f.lineno}:#{line}"
 			identifiers = Identifier.where(:accession => line[0])
+			accessions.push(line[0])
 			if identifiers.empty?
+				puts "CREATING new identifier"
 				Identifier.create!(
 					:accession => line[0],
 					:gi => line[1],
 					:taxid => line[2]
 				)
 			else
+				puts "updating existing identifier"
 				identifiers.first.update_attributes!(
 					:gi => line[1],
 					:taxid => line[2]
 				)
 			end
 		end	#	(f=CSV.open(file, 'rb',{ :headers => false })).each do |line|
+		BlastResult.where(:accession => accessions).index
+		Sunspot.commit
 	end	#	task :update => :environment do
 
 #	as individual lines, if not valid, just moves on to the next line.
