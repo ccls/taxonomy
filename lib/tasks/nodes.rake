@@ -143,7 +143,9 @@ namespace :nodes do
 		#	I'm gonna change the names and identifiers imports as well.
 		#	
 		# Why DELETE? LOAD DATA appends to table (despite what I've read).
-		ActiveRecord::Base.connection.execute("DELETE FROM nodes;");	
+		#	LOAD DATA INFILE DOES NOT EMPTY TABLE OR RESET NEXT ID TO 1;
+		ActiveRecord::Base.connection.execute("DELETE FROM nodes;");
+		ActiveRecord::Base.connection.execute("ALTER TABLE nodes AUTO_INCREMENT = 1;");
 
 		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/20140303/nodes.dmp' INTO TABLE nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\n' (taxid,parent_taxid,rank,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore,@ignore);")
 

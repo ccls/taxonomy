@@ -68,9 +68,11 @@ namespace :identifiers do
 		#	The below sql takes about 45 minutes.
 		#	I'm gonna change the names and identifiers imports as well.
 		#
-		#	Just did this import again with a larger file and it took ... hours?
+		#	Just did this import again with a larger file and it took a couple hours?
 		#	
-		ActiveRecord::Base.connection.execute("DELETE FROM identifiers;");	#	don't think this is needed
+		#	LOAD DATA INFILE DOES NOT EMPTY TABLE OR RESET NEXT ID TO 1;
+		ActiveRecord::Base.connection.execute("DELETE FROM identifiers;");
+		ActiveRecord::Base.connection.execute("ALTER TABLE identifiers AUTO_INCREMENT = 1;");
 		#		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nt.accession_gi_taxid.csv' INTO TABLE identifiers FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (accession,gi,taxid);")
 		#
 		#		ActiveRecord::Base.connection.execute("LOAD DATA INFILE '/Users/jakewendt/github_repo/ccls/taxonomy/data/nt_and_g2a.accession_gi_taxid.sorted.uniq.csv' INTO TABLE identifiers FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (accession,gi,taxid);")

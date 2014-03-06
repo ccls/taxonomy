@@ -40,7 +40,9 @@ namespace :names do
 		#	I'm gonna change the names and identifiers imports as well.
 		#	
 		#	Why DELETE? LOAD DATA appends to table (despite what I've read).
-		ActiveRecord::Base.connection.execute("DELETE FROM names;");	
+		#	LOAD DATA INFILE DOES NOT EMPTY TABLE OR RESET NEXT ID TO 1;
+		ActiveRecord::Base.connection.execute("DELETE FROM names;");
+		ActiveRecord::Base.connection.execute("ALTER TABLE names AUTO_INCREMENT = 1;");
 		#
 		#	I don't use anything except the scientific name, so could change this import to scientific_names.dmp
 		#
