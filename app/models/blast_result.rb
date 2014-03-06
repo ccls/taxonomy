@@ -93,6 +93,26 @@ class BlastResult < ActiveRecord::Base
 
 	include ActiveRecordSunspotter::Sunspotability
 
+	add_sunspot_column( :accession, :default => true )
+	add_sunspot_column( :gi, :type => :integer, :default => true,
+		:meth => ->(s){ s.identifier.try(:gi) },
+		:link_to => ->(s){ "http://www.ncbi.nlm.nih.gov/nuccore/#{s.identifier.try(:gi)}" })
+	add_sunspot_column( :taxid, :type => :integer, :default => true,
+		:meth => ->(s){ s.identifier.try(:taxid) })
+	add_sunspot_column( :name, :default => true,
+		:meth => ->(s){ s.node.try(:scientific_name) || 'NULL?' } )
+	add_sunspot_column( :file_name, :facetable => true, :default => true )
+	add_sunspot_column( :hit_order, :type => :integer, :facetable => true, :default => true )
+	#	floats only really go down to 1e-50 ish.  Use double
+	add_sunspot_column( :expect, :default => true, :facetable => true, :type => :double,
+		:range => {
+			:log   => true,
+			:start => -250,
+			:stop  => 0,
+			:step  => 10
+		} )
+
+
 #  Node.where(:scientific_name => "Viruses").first (taxid 10239)
 #		lft: 2011260, rgt: 2248987
 # 
@@ -120,38 +140,12 @@ class BlastResult < ActiveRecord::Base
 		],
 		:meth => ->(s){ s.node.try(:lft) })
 
-	add_sunspot_column( :id, :type => :integer, :default => true )
-	add_sunspot_column( :file_name, :facetable => true, :default => true )
-	add_sunspot_column( :hit_order, :type => :integer, :facetable => true, :default => true )
-	add_sunspot_column( :accession, :default => true )
-	add_sunspot_column( :name, :facetable => true,
-		:meth => ->(s){ s.node.try(:scientific_name) || 'NULL?' } )
-#		:meth => ->(s){ s.names.scientific.first || 'NULL?' } )
-#
-#	I changed this to double, but then the facets went away?????
-#		(that's because the name of the column changed and was therefore empty.)
-#	Will have to change to double and then reindex if really want it.
-#
-#	Seems floats only really go down to 1e-50 ish
-#
-	add_sunspot_column( :expect, :default => true, :facetable => true, :type => :double,
-		:range => {
-			:log   => true,
-			:start => -250,
-			:stop  => 0,
-			:step  => 10
-		} )
+	add_sunspot_column( :id, :type => :integer )
 
-	add_sunspot_column( :gi, :type => :integer,
-		:meth => ->(s){ s.identifier.try(:gi) },
-		:link_to => ->(s){ "http://www.ncbi.nlm.nih.gov/nuccore/#{s.identifier.try(:gi)}" })
 	add_sunspot_column( :parent_taxid, :type => :integer,
 		:meth => ->(s){ s.node.try(:parent_taxid) })
-	add_sunspot_column( :taxid, :type => :integer,
-		:meth => ->(s){ s.identifier.try(:taxid) })
 	add_sunspot_column( :node_depth, :type => :integer,
 		:meth => ->(s){ s.node.try(:depth) })
-
 
 	add_sunspot_column( :node_right, :type => :integer,
 		:meth => ->(s){ s.node.try(:rgt) })
@@ -168,7 +162,7 @@ class BlastResult < ActiveRecord::Base
 	add_sunspot_column( :node_found, :facetable => true,
 		:meth => ->(s){ ( s.node.present? ) ? 'Yes' : 'No' } )
 
-	add_sunspot_column( :strand, :facetable => true, :default => true )
+	add_sunspot_column( :strand, :facetable => true )
 
 	#	defaults are just string and orderable.  All others are false.
 	add_sunspot_column( :contig_name )
