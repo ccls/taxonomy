@@ -9,16 +9,26 @@ namespace :blast_results do
 	end
 
 	task :check_hit_order => :environment do
-		contig_name=''
-		hit_order=0
+		contig_name,hit_order,count,prev_expect=nil
+#		contig_name=''
+#		hit_order=1
+#		count=1
+#		prev_expect=nil
 #		BlastResult.where(BlastResult.arel_table[:id].gteq(4648732)).find_each do |b|
-		BlastResult.where(BlastResult.arel_table[:id].gteq(28383656)).find_each do |b|
+#		BlastResult.where(BlastResult.arel_table[:id].gteq(28383656)).find_each do |b|
+		BlastResult.find_each do |b|
 			if( contig_name != b.contig_name )
-				hit_order=0
+				hit_order=1
+				count=1
+				prev_expect=nil
 				contig_name = b.contig_name
+			else
+				count+=1
+				hit_order = count unless b.expect == prev_expect
 			end
-			puts "#{b.file_name} : #{contig_name} : #{hit_order+=1}"
-			b.update_attributes!(:hit_order => hit_order)
+			puts "#{b.id} : #{b.file_name} : #{contig_name} : #{hit_order}"
+			b.update_attributes!(:hit_order => hit_order)	#	will only actually update if different
+			prev_expect = b.expect
 		end
 		Sunspot.commit
 	end
@@ -52,14 +62,7 @@ namespace :blast_results do
 			line=''
 			hits_found=true
 
-
-
-#
-#
-#		Seems that having a hit_rank or hit_order may be nice as well
-#
-#
-			hit_order=0
+			hit_order,prev_expect,count=nil
 
 			(f=File.open(file,'rb')).each do |l|
 				line=line+l.chomp
@@ -70,12 +73,13 @@ namespace :blast_results do
 					blast_result[:contig_description]=$1
 					blast_result[:contig_length]=$2
 					blast_result[:contig_name]=blast_result[:contig_description].split(/\s+/)[0]
-					hit_order=0
+					count=1
+					hit_order=1
+					prev_expect=nil
 					line=''
 				elsif( l.match(/Query= /) )
 					line=l.chomp
 				elsif( line.match(/^>(.*)Length=(\d+)$/) )
-					blast_result[:hit_order]=(hit_order+=1)
 					blast_result[:seq_name]=$1
 					blast_result[:seq_length]=$2
 					blast_result[:accession]=blast_result[:seq_name].split('|')[1]
@@ -157,6 +161,11 @@ namespace :blast_results do
 #
 
 				elsif( l.match(/^ Score =\s+(.+) bits \((\d+)\),  Expect = (.+)$/) )
+					
+					count+=1
+					hit_order = count unless b.expect == prev_expect
+					blast_result[:hit_order]=hit_order
+
 					blast_result[:bitscore]=$1
 					blast_result[:score]=$2
 					blast_result[:expect]=$3
