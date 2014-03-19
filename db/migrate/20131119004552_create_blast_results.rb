@@ -16,6 +16,7 @@ class CreateBlastResults < ActiveRecord::Migration
 #	rails doesn't have a method for double, but float with limit 53 seems to work
 #	for some reason, ":limit => 53" isn't copied into the schema.rb
 #		fortunately, I don't really ever use it.
+#	https://github.com/rails/rails/issues/14135
 			t.float :expect, :limit => 53
 			t.string :identities
 			t.integer :identities_percent

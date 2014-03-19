@@ -28,4 +28,6 @@ gem 'jakewendt-active_record_left_joins'
 
 
 gem 'jakewendt-active_record_sunspotter'
+gem 'jakewendt-test_with_verbosity'
 
+gem 'factory_girl_rails'
