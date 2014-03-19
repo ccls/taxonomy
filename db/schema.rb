@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20140214011303) do
     t.integer "seq_length"
     t.float   "bitscore"
     t.integer "score"
-    t.float   "expect"
+    t.float   "expect",             limit: 53
     t.string  "identities"
     t.integer "identities_percent"
     t.string  "gaps"

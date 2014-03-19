@@ -17,6 +17,16 @@ class CreateBlastResults < ActiveRecord::Migration
 #	for some reason, ":limit => 53" isn't copied into the schema.rb
 #		fortunately, I don't really ever use it.
 #	https://github.com/rails/rails/issues/14135
+
+#	activerecord-4.0.4/lib/active_record/connection_adapters/abstract_mysql_adapter.rb
+#	class ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter::Column < ConnectionAdapters::Column
+#		def extract_limit(sql_type)
+#			...
+#			when /^double/i;   53		#	add this to the case block
+#			...
+#		end
+#	end
+
 			t.float :expect, :limit => 53
 			t.string :identities
 			t.integer :identities_percent
