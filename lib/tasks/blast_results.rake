@@ -14,9 +14,8 @@ namespace :blast_results do
 #		hit_order=1
 #		count=1
 #		prev_expect=nil
-#		BlastResult.where(BlastResult.arel_table[:id].gteq(4648732)).find_each do |b|
-#		BlastResult.where(BlastResult.arel_table[:id].gteq(28383656)).find_each do |b|
-		BlastResult.find_each do |b|
+#		BlastResult.find_each do |b|
+		BlastResult.where(BlastResult.arel_table[:id].gteq(26599950)).find_each do |b|
 			if( contig_name != b.contig_name )
 				hit_order=1
 				count=1

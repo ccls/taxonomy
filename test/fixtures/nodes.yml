@@ -6,6 +6,6 @@ one:
   rank: MyString
 
 two:
-  taxid: 1
+  taxid: 2
   parent_taxid: 1
   rank: MyString

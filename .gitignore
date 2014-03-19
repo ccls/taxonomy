@@ -21,6 +21,7 @@ versions/
 /config/database.yml
 /config/initializers/mail.rb
 /config/initializers/secret_token.rb
+/config/secrets.yml
 /data/
 
 /solr/pids

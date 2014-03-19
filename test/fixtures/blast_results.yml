@@ -1,9 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  query: MyString
-  len: 1
-  result: MyString
   bitscore: 1
   score: 1
   expect: MyString
@@ -15,9 +12,6 @@ one:
   accession: MyString
 
 two:
-  query: MyString
-  len: 1
-  result: MyString
   bitscore: 1
   score: 1
   expect: MyString

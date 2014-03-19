@@ -4,11 +4,11 @@ class Node < ActiveRecord::Base
 	has_many :names, :primary_key => :taxid, :foreign_key => :taxid
 
 	has_many :children,
+		->{ order(:lft) },
 		:class_name => 'Node',
 		:foreign_key => :parent_taxid,
 		:primary_key => :taxid,
-		:inverse_of => :parent,
-		:order => :lft
+		:inverse_of => :parent
 		
 	belongs_to :parent, 
 		:class_name => 'Node',
