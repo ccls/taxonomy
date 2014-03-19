@@ -1,7 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    ZenTest (4.9.5)
     actionmailer (4.0.4)
       actionpack (= 4.0.4)
       mail (~> 2.5.4)
@@ -28,8 +27,6 @@ GEM
       tzinfo (~> 0.3.37)
     arel (4.0.2)
     atomic (1.1.16)
-    autotest-rails (4.2.1)
-      ZenTest (~> 4.5)
     builder (3.1.4)
     erubis (2.7.0)
     highline (1.6.21)
@@ -40,16 +37,12 @@ GEM
       progress_bar
       sunspot_rails (= 2.0.0)
       sunspot_solr (= 2.0.0)
-    jakewendt-test_with_verbosity (0.0.0)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    metaclass (0.0.4)
     mime-types (1.25.1)
     mini_portile (0.5.2)
     minitest (4.7.5)
-    mocha (1.0.0)
-      metaclass (~> 0.0.1)
     multi_json (1.9.0)
     mysql (2.9.1)
     mysql2 (0.3.15)
@@ -114,12 +107,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  ZenTest
-  autotest-rails
   jakewendt-active_record_left_joins
   jakewendt-active_record_sunspotter
-  jakewendt-test_with_verbosity
-  mocha
   mysql
   mysql2
   protected_attributes
