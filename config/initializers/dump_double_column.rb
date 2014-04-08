@@ -1,3 +1,5 @@
+require 'active_record/connection_adapters/abstract_mysql_adapter'
+
 class ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter::Column
 	def extract_limit(sql_type)
 		case sql_type
