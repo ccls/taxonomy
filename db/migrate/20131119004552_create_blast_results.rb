@@ -35,9 +35,11 @@ class CreateBlastResults < ActiveRecord::Migration
 			t.string :strand
 			t.string :accession_prefix
 			t.string :accession
+			t.integer :hit_rank
 		end
 		add_index :blast_results, :file_name
 		add_index :blast_results, :accession
+		add_index :blast_results, :hit_rank
 	end
 end
 

@@ -13,5 +13,6 @@ class CreateNames < ActiveRecord::Migration
 #	could limit the input and then it would be.
 #
 #		add_index :names, [:taxid, :name_class], :unique => true
+		add_index :names, [:taxid, :name_class]
 	end
 end

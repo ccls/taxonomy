@@ -15,6 +15,7 @@ class CreateNodes < ActiveRecord::Migration
 			t.integer :depth
 			t.integer :children_count, :default => 0
 			t.string :rank
+			t.string :scientific_name
 		end
 		add_index :nodes, :taxid, :unique => true
 		add_index :nodes, :parent_taxid
