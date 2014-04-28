@@ -17,7 +17,7 @@ end
 
 class BlastResult < ActiveRecord::Base
 	attr_accessible :accession, :accession_prefix, :bitscore, :contig_name, :contig_length,
-		:contig_description, :expect, :file_name, :gaps, :gaps_percent, :hit_order,
+		:contig_description, :expect, :file_name, :gaps, :gaps_percent, :hit_rank,
 		:identities, :identities_percent, :score, :seq_name, :seq_length, :strand
 
 	#
@@ -93,16 +93,19 @@ class BlastResult < ActiveRecord::Base
 
 	include ActiveRecordSunspotter::Sunspotability
 
+	delegate :gi, :taxid, 
+		:to => :identifier, :allow_nil => true
+	delegate :parent_taxid,
+		:to => :node, :allow_nil => true
+
 	add_sunspot_column( :accession, :default => true )
 	add_sunspot_column( :gi, :type => :integer, :default => true,
-		:meth => ->(s){ s.identifier.try(:gi) },
 		:link_to => ->(s){ "http://www.ncbi.nlm.nih.gov/nuccore/#{s.identifier.try(:gi)}" })
-	add_sunspot_column( :taxid, :type => :integer, :default => true,
-		:meth => ->(s){ s.identifier.try(:taxid) })
+	add_sunspot_column( :taxid, :type => :integer, :default => true )
 	add_sunspot_column( :name, :default => true,
 		:meth => ->(s){ s.node.try(:scientific_name) || 'NULL?' } )
 	add_sunspot_column( :file_name, :facetable => true, :default => true )
-	add_sunspot_column( :hit_order, :type => :integer, :facetable => true, :default => true )
+	add_sunspot_column( :hit_rank, :type => :integer, :facetable => true, :default => true )
 	#	floats only really go down to 1e-50 ish.  Use double
 	add_sunspot_column( :expect, :default => true, :facetable => true, :type => :double,
 		:range => {
@@ -142,8 +145,7 @@ class BlastResult < ActiveRecord::Base
 
 	add_sunspot_column( :id, :type => :integer )
 
-	add_sunspot_column( :parent_taxid, :type => :integer,
-		:meth => ->(s){ s.node.try(:parent_taxid) })
+	add_sunspot_column( :parent_taxid, :type => :integer )
 	add_sunspot_column( :node_depth, :type => :integer,
 		:meth => ->(s){ s.node.try(:depth) })
 
@@ -195,6 +197,7 @@ class BlastResult < ActiveRecord::Base
 end
 
 #	if no hits in blast files, ancestors is nil
+#	20140422 - is this still needed?
 class NilClass
 	def collect
 		[]

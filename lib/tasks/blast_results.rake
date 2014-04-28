@@ -8,25 +8,21 @@ namespace :blast_results do
 		Sunspot.commit
 	end
 
-	task :check_hit_order => :environment do
-		contig_name,hit_order,count,prev_expect=nil
-#		contig_name=''
-#		hit_order=1
-#		count=1
-#		prev_expect=nil
-#		BlastResult.find_each do |b|
-		BlastResult.where(BlastResult.arel_table[:id].gteq(26599950)).find_each do |b|
+	task :check_hit_rank => :environment do
+		contig_name,hit_rank,count,prev_expect=nil
+		BlastResult.find_each do |b|
+#		BlastResult.where(BlastResult.arel_table[:id].gteq(26599950)).find_each do |b|
 			if( contig_name != b.contig_name )
-				hit_order=1
+				hit_rank=1
 				count=1
 				prev_expect=nil
 				contig_name = b.contig_name
 			else
 				count+=1
-				hit_order = count unless b.expect == prev_expect
+				hit_rank = count unless b.expect == prev_expect
 			end
-			puts "#{b.id} : #{b.file_name} : #{contig_name} : #{hit_order}"
-			b.update_attributes!(:hit_order => hit_order)	#	will only actually update if different
+			puts "#{b.id} : #{b.file_name} : #{contig_name} : #{hit_rank}"
+			b.update_attributes!(:hit_rank => hit_rank)	#	will only actually update if different
 			prev_expect = b.expect
 		end
 		Sunspot.commit
@@ -35,10 +31,81 @@ namespace :blast_results do
 	task :import => :environment do
 		puts "Start #{Time.now}"
 		env_required('file')
-#		file_required(ENV['file'])
 
 
-#	bundle exec rake app:blast_results:import file="/Volumes/cube/working/output/fallon_*/trinity_non_human_*.blastn.txt"
+		#	bundle exec rake app:blast_results:import file="/Volumes/cube/working/output/fallon_*/trinity_non_human_*.blastn.txt"
+
+#
+#	Before reimporting
+#
+#    fallon_SFPB001A/trinity_non_human_paired.blastn.txt ( 2095804 )
+#
+#    1 ( 536060 )				570676
+#
+#    Virus ( 652 )
+#    Bacteria ( 45664 )
+#    Primate ( 1674086 )
+#
+#
+#    fallon_SFPB001A/trinity_non_human_single.blastn.txt ( 2860211 )
+#
+#    1 ( 638463 )				692941
+#
+#    Virus ( 892 )
+#    Bacteria ( 48448 )
+#    Primate ( 2277896 )
+#
+#
+#    fallon_SFPB001B/trinity_non_human_paired.blastn.txt ( 4104187 )
+#
+#    1 ( 1060675 )			1158192
+#
+#    Virus ( 589 )
+#    Bacteria ( 47245 )
+#    Primate ( 3296411 )
+#
+#
+#    fallon_SFPB001B/trinity_non_human_single.blastn.txt ( 7748919 )
+#
+#    1 ( 1687704 )			1886600
+#
+#    Virus ( 705 )
+#    Bacteria ( 52965 )
+#    Primate ( 6032481 )
+#
+#
+#    fallon_SFPB001C/trinity_non_human_paired.blastn.txt ( 3541400 )
+#
+#    1 ( 888279 )				974072
+#
+#    Virus ( 597 )
+#    Bacteria ( 54746 )
+#    Primate ( 2853924 )
+#
+#
+#    fallon_SFPB001C/trinity_non_human_single.blastn.txt ( 6560541 )
+#
+#    1 ( 1406681 )			1614595
+#
+#    Virus ( 1284 )
+#    Bacteria ( 63240 )
+#    Primate ( 5114671 )
+#
+#    fallon_SFPB001D/trinity_non_human_paired.blastn.txt ( 1114314 )
+#
+#    1 ( 243620 )				270669
+#
+#    Virus ( 1303 )
+#    Bacteria ( 69201 )
+#    Primate ( 871413 )
+#
+#    fallon_SFPB001D/trinity_non_human_single.blastn.txt ( 1670128 )
+#
+#    1 ( 322252 )				382408
+#
+#    Virus ( 1440 )
+#    Bacteria ( 64576 )
+#    Primate ( 1347066 )
 
 
 		files = Dir[ ENV['file'] ]
@@ -47,13 +114,11 @@ namespace :blast_results do
 		files.each do |file|
 
 			filename = file.dup
-#			filename.gsub!("/Volumes/cube/working/output/","")
-#			filename.gsub!("_filtered","")
-#			filename.gsub!(/_\d{8}/,"")
 
-#			filename = filename.split('/').last
-			filename = filename.split('/')[-2..-1].join('/')
-
+			if filename.split('/').length > 1
+				#	if only one value in array, [-2] will return nil (so just use the given filename)
+				filename = filename.split('/')[-2..-1].join('/')
+			end
 
 			blast_defaults = {:file_name => filename}
 
@@ -61,7 +126,7 @@ namespace :blast_results do
 			line=''
 			hits_found=true
 
-			hit_order,prev_expect,count=nil
+			hit_rank,prev_expect,count=nil
 
 			(f=File.open(file,'rb')).each do |l|
 				line=line+l.chomp
@@ -69,17 +134,30 @@ namespace :blast_results do
 				#	first will include all the header stuff
 				if( line.match(/Query= (.*)Length=(\d+)$/) )
 					blast_result=blast_defaults.dup
-					blast_result[:contig_description]=$1
+					#	ActiveRecord::StatementInvalid: Mysql2::Error: Data too long for column 'contig_description' 
+					blast_result[:contig_description]=$1[0..254]	#	some are too long (length<=255)
 					blast_result[:contig_length]=$2
 					blast_result[:contig_name]=blast_result[:contig_description].split(/\s+/)[0]
-					count=1
-					hit_order=1
+					count=0
+					hit_rank=1
 					prev_expect=nil
 					line=''
 				elsif( l.match(/Query= /) )
 					line=l.chomp
 				elsif( line.match(/^>(.*)Length=(\d+)$/) )
-					blast_result[:seq_name]=$1
+
+					count+=1
+
+					#	Had a REALLY long seq_name.  Need to trim this field as well.
+					#>gb|BC127919.1| Homo sapiens similar to TBC1 domain family, member 2B, mRNA (cDNA 
+					#clone IMAGE:40132505), partial cds
+					# gb|BC141940.1| Homo sapiens similar to TBC1 domain family, member 2B, mRNA (cDNA 
+					#clone MGC:165267 IMAGE:40132506), complete cds
+					# gb|BC150505.1| Homo sapiens similar to TBC1 domain family, member 2B, mRNA (cDNA 
+					#clone MGC:179648 IMAGE:40132514), complete cds
+					#Length=392
+					blast_result[:seq_name]=$1[0..254]
+
 					blast_result[:seq_length]=$2
 					blast_result[:accession]=blast_result[:seq_name].split('|')[1]
 
@@ -105,76 +183,35 @@ namespace :blast_results do
 						blast_result.delete(:gaps)
 						blast_result.delete(:gaps_percent)
 						blast_result.delete(:strand)
+						blast_result.delete(:hit_rank)
 					end
-
-
-#	while expect was a float, the following value seems to be the 
-#	lowest non-zero value preserved by the database
-#	 1.401298464324817e-45
-#MariaDB [taxonomy_development]> select id, expect from blast_results where expect > 0 and id < 10510697 group by expect order by expect asc limit 10;
-#+--------+------------------------+
-#| id     | expect                 |
-#+--------+------------------------+
-#|   2796 |  1.401298464324817e-45 |
-#|  41534 |  2.802596928649634e-45 |
-#|   3644 |  4.203895392974451e-45 |
-#|   2841 |  5.605193857299268e-45 |
-#|  35217 |  7.006492321624085e-45 |
-
-
-				# Score = 58.4 bits (31),  Expect = 9e-06
-				# Identities = 35/37 (95%), Gaps = 0/37 (0%)
-				# Strand=Plus/Minus
-
-
-
-
-
-#	NEW TODO !
-#	Occassionally, one query sequence will match something, but have a large gap.
-#	Instead of treating it as a gap, it does something like the following.  
-#	What happens if more than one gap?  Which score is correct? First? Last?
-#	The blastn summary uses the first stats.
-#
-#>ref|XM_003826044.1| PREDICTED: Pan paniscus matrix metallopeptidase 9 (gelatinase 
-#B, 92kDa gelatinase, 92kDa type IV collagenase) (MMP9), mRNA
-#Length=2374
-#
-# Score =  102 bits (55),  Expect = 4e-19
-# Identities = 55/55 (100%), Gaps = 0/55 (0%)
-# Strand=Plus/Minus
-#
-#Query  1     TGCGTGTCCAAAGGCACCCCGGGGAACATCCGGTCCACCTCGCTGGCGCTCCGGG  55
-#             |||||||||||||||||||||||||||||||||||||||||||||||||||||||
-#Sbjct  2039  TGCGTGTCCAAAGGCACCCCGGGGAACATCCGGTCCACCTCGCTGGCGCTCCGGG  1985
-#
-#
-# Score = 97.1 bits (52),  Expect = 2e-17
-# Identities = 52/52 (100%), Gaps = 0/52 (0%)
-# Strand=Plus/Minus
-#
-#Query  50    TCCGGGAACTCACGCGCCAGTAGAAGCGGTCCTGGCAGAAATAGGCTTTCTC  101
-#             ||||||||||||||||||||||||||||||||||||||||||||||||||||
-#Sbjct  2110  TCCGGGAACTCACGCGCCAGTAGAAGCGGTCCTGGCAGAAATAGGCTTTCTC  2059
-#
-#
-
 				elsif( l.match(/^ Score =\s+(.+) bits \((\d+)\),  Expect = (.+)$/) )
-					
-					count+=1
-					hit_order = count unless b.expect == prev_expect
-					blast_result[:hit_order]=hit_order
-
-					blast_result[:bitscore]=$1
-					blast_result[:score]=$2
-					blast_result[:expect]=$3
+					#	Some hits are in multiple pieces.
+					#	This is used to ONLY use the FIRST datum.
+					if blast_result[:expect].blank?
+						hit_rank = count unless $3 == prev_expect
+					end
+					blast_result.reverse_merge!({
+						:hit_rank => hit_rank,
+						:bitscore => $1,
+						:score    => $2,
+						:expect   => $3
+					})
+					prev_expect = blast_result[:expect]
 				elsif( l.match(/^ Identities = (.+) \((\d+)%\), Gaps = (.+) \((\d+)%\)$/) )
-					blast_result[:identities]=$1
-					blast_result[:identities_percent]=$2
-					blast_result[:gaps]=$3
-					blast_result[:gaps_percent]=$4
+					#	Also, only want the first set so reverse_merge!
+					blast_result.reverse_merge!({
+						:identities         => $1,
+						:identities_percent => $2,
+						:gaps               => $3,
+						:gaps_percent       => $4
+					})
 				elsif( l.match(/^ Strand=(.+)$/) )
-					blast_result[:strand]=$1
+					#	Also, only want the first set so reverse_merge!
+					#	I use :strand as a trigger.
+					blast_result.reverse_merge!({
+						:strand => $1
+					})
 				elsif( l.match(/ No hits found /) )
 					#	***** No hits found *****
 					#	continue to read lines, but do not try to create result as will be empty and fail.

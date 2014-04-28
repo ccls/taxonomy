@@ -356,10 +356,11 @@ How to set new value?
 ---
 === Java Version
 
-I have found on my mac, the using Sunspot with Java 1.7 will cause all kinds of
+I have found on my mac, that using Sunspot with Java 1.7 will cause all kinds of
 random grief.
 
-This sucks now as sunspot 2.0.0 needs patches to work with rails 4.
+This sucks now as sunspot 2.0.0 needs patches to work with rails 4.
+
 
 
 ---
@@ -375,6 +376,10 @@ file_names = BlastResult.group(:file_name).count
 select = file_names.keys.select{|f|f.match(/^fallon_SFP/)}.select{|f|f.match(/blastn.txt$/)}
 BlastResult.where(:file_name => select).find_each{|b|b.destroy}
 bundle exec rake app:blast_results:import file="blast_results/fallon_SFPB001?/trinity_non_human_{single,paired}.blastn.txt"
+
+
+bundle exec rake app:blast_results:import file="blast_results/fallon_SFPB001[CD]/trinity_non_human_single.blastn.txt"
+
 
 
 BlastResult.where(:file_name => "fallon_SFPB001B_filtered_20130731_trinity_non_human_single.blastn.txt").find_each{|b| b.delete }
