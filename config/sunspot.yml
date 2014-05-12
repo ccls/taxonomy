@@ -3,6 +3,10 @@ production:
     hostname: localhost
     port: 8986
     log_level: WARNING
+    solr_home: /Users/jakewendt/github_repo/ccls/taxonomy/solr
+    path: /solr/production
+
+
 
 development:
   solr:
@@ -10,6 +14,10 @@ development:
     port: 8985
     log_level: INFO
     max_memory: 5G
+    solr_home: /Users/jakewendt/github_repo/ccls/taxonomy/solr
+    path: /solr/development
+
+
 #
 #	My default was around 1G and caused 
 #		java.lang.OutOfMemoryError: Java heap space
@@ -27,3 +35,7 @@ test:
     hostname: localhost
     port: 8984
     log_level: WARNING
+    solr_home: /Users/jakewendt/github_repo/ccls/taxonomy/solr
+    path: /solr/test
+
+

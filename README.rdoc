@@ -366,9 +366,17 @@ This sucks now as sunspot 2.0.0 needs patches to work with rails 4.
 ---
 === Running
 
-sudo /opt/local/share/mariadb/support-files/mysql.server start
+If brand new mariadb installation, MUST do this FIRST.
+as it creates files with the proper ownership and permissions in /opt/local/var/db/mariadb/
 
-bundle exec rake sunspot:solr:start 
+ sudo mysql_install_db --user=mysql
+
+
+
+
+ sudo /opt/local/share/mariadb/support-files/mysql.server start
+
+ bundle exec rake sunspot:solr:start 
 
 
 Reimport (~30 million)

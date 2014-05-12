@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140214011303) do
+ActiveRecord::Schema.define(version: 20131119004552) do
 
   create_table "blast_results", force: true do |t|
     t.string  "file_name"
@@ -30,12 +30,12 @@ ActiveRecord::Schema.define(version: 20140214011303) do
     t.string  "strand"
     t.string  "accession_prefix"
     t.string  "accession"
-    t.integer "hit_order"
+    t.integer "hit_rank"
   end
 
   add_index "blast_results", ["accession"], name: "index_blast_results_on_accession", using: :btree
   add_index "blast_results", ["file_name"], name: "index_blast_results_on_file_name", using: :btree
-  add_index "blast_results", ["hit_order"], name: "index_blast_results_on_hit_order", using: :btree
+  add_index "blast_results", ["hit_rank"], name: "index_blast_results_on_hit_rank", using: :btree
 
   create_table "identifiers", force: true do |t|
     t.string  "accession"
