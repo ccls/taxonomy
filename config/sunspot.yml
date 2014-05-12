@@ -3,7 +3,7 @@ production:
     hostname: localhost
     port: 8986
     log_level: WARNING
-    solr_home: /Users/jakewendt/github_repo/ccls/taxonomy/solr
+    solr_home: <%= "#{Rails.root}/solr" %>
     path: /solr/production
 
 
@@ -14,7 +14,7 @@ development:
     port: 8985
     log_level: INFO
     max_memory: 5G
-    solr_home: /Users/jakewendt/github_repo/ccls/taxonomy/solr
+    solr_home: <%= "#{Rails.root}/solr" %>
     path: /solr/development
 
 
@@ -35,7 +35,7 @@ test:
     hostname: localhost
     port: 8984
     log_level: WARNING
-    solr_home: /Users/jakewendt/github_repo/ccls/taxonomy/solr
+    solr_home: <%= "#{Rails.root}/solr" %>
     path: /solr/test
 
 
