@@ -127,8 +127,18 @@ namespace :blast_results do
 			hits_found=true
 
 			hit_rank,prev_expect,count=nil
+			from_line_number = ENV['from_line_number'].to_i || 0
+			line_count = 0
 
 			(f=File.open(file,'rb')).each do |l|
+				line_count += 1
+				if line_count < from_line_number
+					puts "line_count:#{line_count} still less than #{from_line_number}. Skipping."
+					next
+				#else
+				#	puts "line_count:#{line_count} STILL NOT less than #{from_line_number}. Test skipping."
+				#	next
+				end
 				line=line+l.chomp
 
 				#	first will include all the header stuff
