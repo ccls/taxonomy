@@ -120,7 +120,7 @@ namespace :blast_results do
 				filename = filename.split('/')[-2..-1].join('/')
 			end
 
-			blast_defaults = {:file_name => filename}
+			blast_defaults = {:file_name => ENV['file_name']||filename }
 
 			blast_result = blast_defaults.dup
 			line=''
