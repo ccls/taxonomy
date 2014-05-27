@@ -361,6 +361,8 @@ random grief.
 
 This sucks now as sunspot 2.0.0 needs patches to work with rails 4.
 
+This is all good now. Yay!
+
 
 
 ---
