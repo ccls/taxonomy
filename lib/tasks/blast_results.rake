@@ -127,16 +127,31 @@ namespace :blast_results do
 			hits_found=true
 
 			hit_rank,prev_expect,count=nil
-			from_line_number = ENV['from_line_number'].to_i || 0
+#			from_line_number = ENV['from_line_number'].to_i || 0
 
 			(f=File.open(file,'rb')).each do |l|
-				if f.lineno < from_line_number
-					puts "line_count:#{f.lineno} still less than #{from_line_number}. Skipping."
-					next
-				#else
-				#	puts "line_count:#{f.lineno} STILL NOT less than #{from_line_number}. Test skipping."
-				#	next
-				end
+
+
+#
+#	While this means well, sadly it fails for big files.  f.lineno is an integer so it
+#	has a maximum value which I've managed to cross.  This then becomes negative...
+#	line_count:-2147483648 still less than 1656438226. Skipping.
+#	... and then won't do anything for another (2147483648 * from_line_number) lines.
+#	Now, if crash causes need for rerun, just use "tail +n ..." to create a new file
+#	and use the "file_name=..." option.
+#
+#				if f.lineno < from_line_number
+#					puts "line_count:#{f.lineno} still less than #{from_line_number}. Skipping."
+#					next
+#				#else
+#				#	puts "line_count:#{f.lineno} STILL NOT less than #{from_line_number}. Test skipping."
+#				#	next
+#				end
+
+
+
+
+
 				line=line+l.chomp
 
 				#	first will include all the header stuff
@@ -182,7 +197,11 @@ namespace :blast_results do
 					#	won't at the very first match
 					if( blast_result.has_key?(:strand) )
 						puts blast_result.inspect
-						BlastResult.create!(blast_result)
+#
+#	Add hit_rank limit?
+#
+#						BlastResult.create!(blast_result)
+						BlastResult.create!(blast_result) if blast_result[:hit_rank] <= 10
 						blast_result.delete(:bitscore)
 						blast_result.delete(:score)
 						blast_result.delete(:expect)
@@ -228,7 +247,11 @@ namespace :blast_results do
 				elsif( l.match(/^Effective search space used:/) )
 					if hits_found
 						puts blast_result.inspect
-						BlastResult.create!(blast_result)
+#
+#	Add hit_rank limit?
+#
+#						BlastResult.create!(blast_result)
+						BlastResult.create!(blast_result) if blast_result[:hit_rank] <= 10
 					else
 						puts "No hits found.  Skipping."
 						hits_found=true
